@@ -1,5 +1,34 @@
-from __future__ import unicode_literals
+#!/usr/bin/env python
+# encoding: utf-8
 
+from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
+
+class Problem(models.Model):
+    user = models.ForeignKey(User, verbose_name=u'Użytkownik')
+
+    electrician_needed = models.BooleanField(default=False, verbose_name=u'Żądanie elektryka?')
+    solved = models.BooleanField(default=False, verbose_name=u'Problem rozwiązany?')
+
+    class Meta:
+        verbose_name = u'Problem'
+        verbose_name_plural = u'Problemy'
+
+    def __unicode__(self):
+        return u'{} (Elektryk: {}) - {}'.format(self.user.username, self.electrician_needed,
+                                                u'RZOWIĄZANY' if self.solved else u'W TRAKCIE')
+
+
+class Message(models.Model):
+    problem = models.ForeignKey(Problem, null=True, blank=True, verbose_name=u'Problem')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=u'Utworzona')
+
+    content = models.TextField(verbose_name=u'Treść wiadomości')
+
+    class Meta:
+        verbose_name = u'Wiadomość'
+        verbose_name_plural = u'Wiadomości'
+
+    def __unicode__(self):
+        return u'{}... ({})'.format(self.content[0:15], self.problem_id)

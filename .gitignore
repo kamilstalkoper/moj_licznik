@@ -3,3 +3,6 @@
 
 # Collected static files
 static/
+
+# Data base
+db.sqlite3
