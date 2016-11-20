@@ -31,35 +31,50 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # default django applications
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # custom applications
+    'app.subapps.accounts',
+    'app.subapps.contact',
+    'app.subapps.news',
+    'app.subapps.statistics',
+    'app.subapps.structure',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = filter(None, [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    'django.middleware.security.SecurityMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware' if DEBUG else None,
+])
 
 ROOT_URLCONF = 'app.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -103,18 +118,31 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl'
+TIME_ZONE = 'Europe/Warsaw'
 
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
+DATE_FORMAT = 'Y-m-d'
+SHORT_DATE_FORMAT = 'Y-m-d'
+TIME_FORMAT = 'H:i:s'
+DATETIME_FORMAT = DATE_FORMAT + ' ' + TIME_FORMAT
 
 USE_L10N = True
-
 USE_TZ = True
+USE_I18N = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
+
+SERVER_EMAIL = 'powiadomienia@elm.pl'
+DEFAULT_FROM_EMAIL = SERVER_EMAIL
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
