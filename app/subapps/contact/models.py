@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from django.contrib.auth.models import User
+from app.subapps.accounts.models import User
 from django.db import models
 
 

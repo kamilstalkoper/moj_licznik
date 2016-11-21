@@ -1,5 +1,12 @@
-from __future__ import unicode_literals
+#!/usr/bin/env python
+# encoding: utf-8
+
+from django.contrib.auth.models import AbstractUser
 
 from django.db import models
 
-# Create your models here.
+from app.subapps.structure.models import Meter
+
+
+class User(AbstractUser):
+    meter = models.ForeignKey(Meter)
