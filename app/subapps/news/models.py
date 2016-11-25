@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from app.subapps.accounts.models import User
+from __future__ import absolute_import
+
+from django.contrib.auth.models import User
 from django.db import models
 
 from app.subapps.structure.models import Station

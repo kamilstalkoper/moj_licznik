@@ -6,3 +6,6 @@ static/
 
 # Data base
 db.sqlite3
+
+# Python binary
+*.pyc

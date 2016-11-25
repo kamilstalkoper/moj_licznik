@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from app.subapps.accounts.models import User
+from __future__ import absolute_import
+
+from django.contrib.auth.models import User
 from django.db import models
+
+from .enums.standard_enums import REASON_ENUMS, SCALER_UNIT_ENUMS
+from .enums.period_enums import PERIOD_TYPES
 
 
 class Station(models.Model):
@@ -24,12 +29,16 @@ class Station(models.Model):
 
 
 class Meter(models.Model):
-    model_name = models.CharField(null=True, blank=True,
+    users = models.ManyToManyField(User, verbose_name=u'Użytkownicy')
+
+    model_name = models.CharField(null=True, blank=True, max_length=255,
                                   verbose_name=u'Nazwa modelu')
     serial_number = models.CharField(
         max_length=255, verbose_name=u'Numer seryjny')
+
     is_active = models.BooleanField(default=True, verbose_name=u'Aktywny?')
-    detection_report_date = models.DateTimeField(verbose_name=u'') ###############################
+    detection_report_date = models.DateTimeField(
+        verbose_name=u'Data wykrycia licznika przez AMI')
     station = models.ForeignKey(Station, verbose_name=u'Stacja')
 
     class Meta:
@@ -53,7 +62,8 @@ class MeterPoint(models.Model):
                              verbose_name=u'Flagi')
 
     station = models.ForeignKey(Station, verbose_name=u'Stacja')
-    status_change_date = models.DateTimeField(verbose_name=u'') #################################
+    status_change_date = models.DateTimeField(
+        verbose_name=u'Data ostatniej zmiany statusu')
 
     class Meta:
         verbose_name = u'Punkt pomiaru'
@@ -113,20 +123,24 @@ class MeterPointState(models.Model):
 
 
 class MeterObject(models.Model):
-    alias = models.CharField(max_length=255, verbose_name=u'')
-    description = models.CharField(max_length=500, verbose_name=u'')
-    frequency = models.SmallIntegerField(verbose_name=u'')
-    incremental_chart = models.BooleanField(verbose_name=u'')
-    obis = models.CharField(max_length=32, verbose_name=u'')
-    precision = models.SmallIntegerField(verbose_name=u'')
-    unit = models.SmallIntegerField(verbose_name=u'')
+    alias = models.CharField(max_length=255, verbose_name=u'Alias')
+    description = models.CharField(max_length=500, verbose_name=u'Opis')
+
+    obis = models.CharField(max_length=32, verbose_name=u'OBIS')
+    frequency = models.SmallIntegerField(verbose_name=u'Częstotliwość')
+    incremental_chart = models.BooleanField(
+        default=True,
+        verbose_name=u'Czy wartość w stosunku do poprzednego pomiaru wzrosła?')
+    precision = models.SmallIntegerField(verbose_name=u'Precyzja')
+
+    unit = models.SmallIntegerField(verbose_name=u'Jednostka')
 
     class Meta:
-        verbose_name = u''
-        verbose_name_plural = u''
+        verbose_name = u'Obiekt pomiaru'
+        verbose_name_plural = u'Obiekty pomiarów'
 
     def __unicode__(self):
-        return u''.format()
+        return u'{} ({})'.format(self.alias, self.obis)
 
 
 class MeterData(models.Model):
@@ -134,13 +148,18 @@ class MeterData(models.Model):
     meter_object = models.ForeignKey(
         MeterObject, verbose_name=u'Obiekt pomiaru')
 
-    acq_time = models.DateTimeField(verbose_name=u'') #####################################
-    cap_time = models.DateTimeField(verbose_name=u'') #####################################
+    acq_time = models.DateTimeField(verbose_name=u'Data pomiaru')
+    cap_time = models.IntegerField(
+        default=15, verbose_name=u'Częstotliwość pomiaru (minuty)')
 
     flags = models.CharField(max_length=32, verbose_name=u'Flagi')
-    reason = models.SmallIntegerField(verbose_name=u'') ###################################
-    scaler_scaler = models.IntegerField(verbose_name=u'') #################################
-    scaler_unit = models.IntegerField(verbose_name=u'') ###################################
+    reason = models.SmallIntegerField(
+        default=REASON_ENUMS.auto, choices=REASON_ENUMS.as_enum(),
+        verbose_name=u'Typ pomiaru')
+    scaler_scaler = models.IntegerField(verbose_name=u'Wartość normalizacji')
+    scaler_unit = models.SmallIntegerField(
+        choices=SCALER_UNIT_ENUMS.as_enum(), default=SCALER_UNIT_ENUMS.KWh,
+        verbose_name=u'Jednostka')
 
     value = models.BigIntegerField(verbose_name=u'Wartość pomiaru')
 
@@ -159,7 +178,8 @@ class Alarm(models.Model):
     limit = models.IntegerField(verbose_name=u'Limit')
 
     period = models.IntegerField(verbose_name=u'Okres')
-    period_type = models.SmallIntegerField(verbose_name=u'Typ okresu')
+    period_type = models.SmallIntegerField(
+        choices=PERIOD_TYPES.as_enum(), verbose_name=u'Typ okresu')
 
     class Meta:
         verbose_name = u'Alarm'
