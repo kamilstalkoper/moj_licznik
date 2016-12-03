@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Usuń licznik{% endblock %}
+
+{% block content %}
+    <div>
+        Czy na pewno chcesz usunąć licznik {{ meter.serial_number }} ze swojej listy liczników?
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Tak, chcę</button>
+    </form>
+
+    <a href="{% url 'accounts:profile_view' %}">Jednak nie...</a>
+{% endblock %}
