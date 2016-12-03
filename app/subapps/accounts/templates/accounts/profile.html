@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Profil użytkownika{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Nazwa użytkownika: </h2>
+        <span>{{ request.user.username }}</span>
+    </div>
+
+    <div>
+        <h2>Email: </h2>
+        <span>{{ request.user.email }}</span>
+    </div>
+
+    <div>
+        <h2>Imię: </h2>
+        <span>{{ request.user.first_name|default:'Nie podano' }}</span>
+    </div>
+
+    <div>
+        <h2>Nazwisko: </h2>
+        <span>{{ request.user.last_name|default:'Nie podano' }}</span>
+    </div>
+
+    <div>
+        <h2>Zarejestrowany od: </h2>
+        <span>{{ request.user.date_joined|date:'l d E Y' }}</span>
+    </div>
+
+    <div>
+        <h2>Ostatnio zalogowany: </h2>
+        <span>{{ request.user.last_login|date:'l d E Y G:i' }}</span>
+    </div>
+
+    <div>
+        <h2>Moje liczniki: </h2>
+        <a href="">Dodaj</a>
+        {% for meter in user_meters %}
+            <span>
+                Numer seryjny: {{ meter.serial_number }}
+                <a href="">Usuń</a>
+            </span>
+        {% empty %}
+            <span>Nie masz żadnych dodanych liczników.</span>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'accounts:edit_user_data_view' %}">Edytuj dane</a>
+    <a href="{% url 'accounts:password_change' %}">Zmień hasło</a>
+{% endblock %}

@@ -58,3 +58,14 @@ class RegistrationSecondStepForm(UserCreationForm):
         self.meter_point_state.meter_point.users.add(user)
 
         return user
+
+
+class EditUserDataForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super(EditUserDataForm, self).__init__(*args, **kwargs)
+        self.fields.get('first_name').required = False
+        self.fields.get('last_name').required = False

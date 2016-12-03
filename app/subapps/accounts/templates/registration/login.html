@@ -5,28 +5,17 @@
 {% block content %}
     <form method="post">
         {% csrf_token %}
+        {% if form.errors %}
+            <p class="error-validation">Błędny login i/lub hasło.</p>
+        {% endif %}
         <div>
             <label for="id_username">Nazwa użytkownika:</label>
             <input type="text" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}">
-            {% with form.username.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
         </div>
 
         <div>
             <label for="id_password">Hasło:</label>
             <input type="password" name="password" id="id_password" maxlength="255">
-            {% with form.password.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
         </div>
 
         <input type="hidden" name="next" value="{{ next }}">
