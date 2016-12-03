@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dane użytkownika{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_email">E-mail:</label>
+            <input type="email" name="email" id="id_email" value="{{ form.email.value }}" required>
+            {% with form.email.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_first_name">Imię:</label>
+            <input type="text" name="first_name" id="id_first_name" value="{{ form.first_name.value|default:'' }}">
+            {% with form.first_name.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_last_name">Nazwisko:</label>
+            <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}">
+            {% with form.last_name.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Zmień</button>
+    </form>
+{% endblock %}
