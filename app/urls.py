@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^', include('app.subapps.accounts.urls.registration',
                       namespace='authentication')),
 
+    # contact
+    url(r'^kontakt/', include('app.subapps.contact.urls', namespace='contact')),
+
     # structure
     url(r'^', include('app.subapps.structure.urls')),
 ]
