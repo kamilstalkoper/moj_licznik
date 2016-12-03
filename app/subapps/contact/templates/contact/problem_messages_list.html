@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Lista wiadomości w wątku{% endblock %}
+
+{% block content %}
+    <form action="{% url 'contact:seng_message_view' problem_id %}" method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_message_content">Wiadomość:</label>
+            <textarea name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
+            {% with form.message_content.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <div>
+            <label for="id_send_copy_to_me">Wyślij kopię wiadomości również do mnie: </label>
+            <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" {% if form.id_send_copy_to_me.value %}checked{% endif %}>
+        </div>
+        <button type="submit">Wyślij</button>
+    </form>
+    <ul>
+        {% for message in messages %}
+            <li>
+                <span>Data: {{ message.created_at|date:'l d E Y H:i' }}</span>
+                {% if message.is_admin_replay %}
+                    <b>{{ message.content }}</b>
+                {% else %}
+                    <span>{{ message.content }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+        <div class="pagination">
+			{% if page_obj.has_previous %}
+				<a href="?strona={{ page_obj.previous_page_number }}">&laquo; nowsze wiadomości</a>
+			{% else %}
+				<span>&laquo; nowsze wiadomości</span>
+			{% endif %}
+			|
+			{% if page_obj.has_next %}
+				<a href="?strona={{ page_obj.next_page_number }}">starsze wiadomości &raquo;</a>
+            {% else %}
+                <span>starsze wiadomości &raquo;</span>
+			{% endif %}
+        </div>
+	{% endif %}
+{% endblock %}
