@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dane użytkownika{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_username">Nazwa użytkownika:</label>
+            <input type="text" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}" required>
+            {% with form.username.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_email">E-mail:</label>
+            <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" required>
+            {% with form.email.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_password1">Hasło:</label>
+            <input type="password" name="password1" id="id_password1" required>
+            {% with form.password1.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_password2">Powtórz hasło:</label>
+            <input type="password" name="password2" id="id_password2" required>
+            {% with form.password2.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Zarejestruj</button>
+        <button type="reset">Wyczyść</button>
+    </form>
+{% endblock %}

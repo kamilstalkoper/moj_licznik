@@ -29,8 +29,6 @@ class Station(models.Model):
 
 
 class Meter(models.Model):
-    users = models.ManyToManyField(User, verbose_name=u'Użytkownicy')
-
     model_name = models.CharField(null=True, blank=True, max_length=255,
                                   verbose_name=u'Nazwa modelu')
     serial_number = models.CharField(
@@ -50,6 +48,9 @@ class Meter(models.Model):
 
 
 class MeterPoint(models.Model):
+    users = models.ManyToManyField(User, blank=True,
+                                   verbose_name=u'Użytkownicy')
+
     name = models.CharField(max_length=255, verbose_name=u'Nazwa')
     description = models.CharField(null=True, blank=True, max_length=500,
                                    verbose_name=u'Opis')
