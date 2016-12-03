@@ -14,6 +14,9 @@ urlpatterns = [
                                   namespace='registration')),
     url(r'^konto/', include('app.subapps.accounts.urls.accounts',
                                   namespace='accounts')),
+    url(r'^zarzadzaj_licznikami/',
+        include('app.subapps.accounts.urls.meter_management',
+                namespace='meter_management')),
 
     # authentication
     url(r'^', include('app.subapps.accounts.urls.registration',

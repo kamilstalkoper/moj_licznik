@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Profil użytkownika{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Nazwa modelu: </h2>
+        <span>{{ meter.model_name }}</span>
+    </div>
+
+    <div>
+        <h2>Numer seryjny: </h2>
+        <span>{{ meter.serial_number }}</span>
+    </div>
+
+    <div>
+        <h2>Aktywny: </h2>
+        <span>{{ meter.is_active|yesno:'Tak,Nie' }}</span>
+    </div>
+
+    <div>
+        <h2>Data wykrycia przez system: </h2>
+        <span>{{ meter.detection_report_date|date:'l d E Y G:i' }}</span>
+    </div>
+
+    <div>
+        <h2>Połączony ze stacją: </h2>
+        <span>{{ meter.station.address }}</span>
+    </div>
+
+    <a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a>
+{% endblock %}

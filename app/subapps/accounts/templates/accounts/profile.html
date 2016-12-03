@@ -35,11 +35,11 @@
 
     <div>
         <h2>Moje liczniki: </h2>
-        <a href="">Dodaj</a>
+        <a href="{% url 'meter_management:add_meter' %}">Dodaj</a>
         {% for meter in user_meters %}
             <span>
-                Numer seryjny: {{ meter.serial_number }}
-                <a href="">Usuń</a>
+                Numer seryjny: <a href="{%  url 'meter_management:meter_data_view' meter.id %}">{{ meter.serial_number }}</a>
+                <a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a>
             </span>
         {% empty %}
             <span>Nie masz żadnych dodanych liczników.</span>
