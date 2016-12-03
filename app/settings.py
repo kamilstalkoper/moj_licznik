@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_URL = '/zaloguj'
+LOGIN_REDIRECT_URL = '/konto'
+
 
 # Application definition
 
@@ -142,7 +145,7 @@ STATICFILES_FINDERS = (
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 
-SERVER_EMAIL = 'powiadomienia@elm.pl'
+SERVER_EMAIL = 'powiadomienia@mojLicznik.pl'
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

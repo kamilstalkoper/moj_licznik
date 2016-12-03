@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dane podstawowe{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_meter_serial_number">Numer seryjny licznika:</label>
+            <input type="text" name="meter_serial_number" id="id_meter_serial_number" maxlength="255" value="{{ form.meter_serial_number.value|default:'' }}" required>
+            {% with form.meter_serial_number.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_ppe_code">Kod PPE:</label>
+            <input type="text" name="ppe_code" id="id_ppe_code" maxlength="255" value="{{ form.ppe_code.value|default:'' }}" required>
+            {% with form.ppe_code.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Dalej</button>
+        <button type="reset">Wyczyść</button>
+    </form>
+{% endblock %}

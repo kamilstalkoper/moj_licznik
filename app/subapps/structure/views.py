@@ -1,3 +1,10 @@
-from django.shortcuts import render
+#!/usr/bin/env python
+# encoding: utf-8
 
-# Create your views here.
+from __future__ import absolute_import
+
+from django.views.generic import TemplateView
+
+
+class HomeView(TemplateView):
+    template_name = 'structure/home.html'
