@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ notice.title }}{% endblock %}
+
+{% block content %}
+    <a href="{% url 'news:notices_list_view' %}">&laquo; Powrót do listy aktualności</a>
+    <div>
+        <h1>{{ notice.title }}</h1>
+        <span>{{ notice.created_at }}</span>
+
+        <div>
+            {{ notice.content_html|safe }}
+        </div>
+    </div>
+
+    {% if notice.breakdowns.exists %}
+        <div>
+            <h3>Lista stacji podlegających wyłączeniu:</h3>
+            <ul>
+                {% for breakdown in notice.breakdowns.all %}
+                    <li>
+                        <p>Od: {{ breakdown.start_at }}</p>
+                        <p>Do: {{ breakdown.end_at }}</p>
+                        {% for station in breakdown.stations.all %}
+                            <p>{{ station.address }}</p>
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -10,14 +10,16 @@ from app.subapps.structure.models import Station
 
 
 class Breakdown(models.Model):
-    start_at = models.DateTimeField(verbose_name=u'Data rozpoczęcia awarii')
-    end_at = models.DateTimeField(verbose_name=u'Data zakończenia awarii')
+    start_at = models.DateTimeField(verbose_name=u'Data rozpoczęcia')
+    end_at = models.DateTimeField(verbose_name=u'Data zakończenia')
+    reason = models.TextField(null=True, blank=True, verbose_name=u'Powód')
 
-    stations = models.ManyToManyField(Station, verbose_name=u'Stacje objęte awarią')
+    stations = models.ManyToManyField(
+        Station, verbose_name=u'Stacje objęte wyłączeniem')
 
     class Meta:
-        verbose_name = u'Awaria'
-        verbose_name_plural = u'Awarie'
+        verbose_name = u'Wyłączenie'
+        verbose_name_plural = u'Wyłączenia'
 
     def __unicode__(self):
         return u'{} ({} -> {})'.format(self.id, self.start_at, self.end_at)
@@ -32,11 +34,16 @@ class Notice(models.Model):
     content_body = models.TextField(verbose_name=u'Treść (markdown)')
     content_html = models.TextField(verbose_name=u'Treść HTML')
 
-    breakdowns = models.ManyToManyField(Breakdown, blank=True, verbose_name=u'Powiązane przerwy w dostawie')
+    breakdowns = models.ManyToManyField(
+        Breakdown, blank=True, verbose_name=u'Powiązane przerwy w dostawie')
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = u'Ogłoszenie'
         verbose_name_plural = u'Ogłoszenia'
 
     def __unicode__(self):
-        return u'{}{}'.format(self.title, u' - Powiązane z wyłączeniem' if self.breakdowns else u'')
+        return u'{}{}'.format(self.title,
+                              u' - Powiązane z wyłączeniem' if self.breakdowns
+                              else u'')

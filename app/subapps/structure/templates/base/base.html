@@ -88,10 +88,15 @@
                                 <h3>Informacje</h3>
                                 <ul class="nav side-menu">
                                     <li>
-                                        <a href="">
+                                        <a>
                                             <i class="fa fa-newspaper-o"></i>
                                             Aktualności
+                                            <span class="fa fa-chevron-down"></span>
                                         </a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="{% url 'news:notices_list_view' %}">Ogłoszenia</a></li>
+                                            <li><a href="{% url 'news:breakdowns_list_view' %}">Wyłączenia</a></li>
+                                        </ul>
                                     </li>
                                     <li>
                                         <a>
@@ -160,7 +165,7 @@
                                         <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                                             <li>
                                                 <a>
-                                                    <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                                    <span class="image"><img src="{% static 'img/user_default.png' %}" alt="Profile Image" /></span>
                                                     <span>
                                                         <span>John Smith</span>
                                                         <span class="time">3 mins ago</span>

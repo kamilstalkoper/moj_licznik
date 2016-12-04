@@ -25,6 +25,10 @@ urlpatterns = [
     # contact
     url(r'^kontakt/', include('app.subapps.contact.urls', namespace='contact')),
 
+    # news
+    url(r'^aktualnosci/', include('app.subapps.news.urls.frontend',
+                                  namespace='news')),
+
     # structure
     url(r'^', include('app.subapps.structure.urls')),
 ]
