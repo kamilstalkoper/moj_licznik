@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Ustaw licznik główny{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_meter_serial_number">Wybierz licznik główny:</label>
+            <select id="id_meter_serial_number" name="meter_serial_number">
+                {% for meter in user_meters %}
+                    <option value="{{ meter.serial_number }}" {% if cp_user_main_meter.id == meter.id %}selected{% endif %}>{{ meter.serial_number }}</option>
+                {% endfor %}
+            </select>
+            {% with form.meter_serial_number.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Zmień</button>
+    </form>
+{% endblock %}

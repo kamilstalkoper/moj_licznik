@@ -3,10 +3,18 @@
 {% block title %}Lista aktualności{% endblock %}
 
 {% block content %}
-    <form action="{% url 'news:search_notices_view' %}" method="get">
-        <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %} required>
-        <button type="submit">Wyszukaj</button>
-    </form>
+    <div class="mid_center">
+        <form action="{% url 'news:search_notices_view' %}" method="get">
+            <div class="col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+                    <span class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </span>
+                </div>
+            </div>
+        </form>
+    </div>
     {% if notices %}
         {% if is_searched %}
             <span>Aktualności spełniające kryterium {{ search_phrase }}:</span>
