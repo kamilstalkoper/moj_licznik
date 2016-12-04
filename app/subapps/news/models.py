@@ -10,15 +10,16 @@ from app.subapps.structure.models import Station
 
 
 class Breakdown(models.Model):
-    start_at = models.DateTimeField(verbose_name=u'Data rozpoczęcia awarii')
-    end_at = models.DateTimeField(verbose_name=u'Data zakończenia awarii')
+    start_at = models.DateTimeField(verbose_name=u'Data rozpoczęcia')
+    end_at = models.DateTimeField(verbose_name=u'Data zakończenia')
+    reason = models.TextField(null=True, blank=True, verbose_name=u'Powód')
 
     stations = models.ManyToManyField(
-        Station, verbose_name=u'Stacje objęte awarią')
+        Station, verbose_name=u'Stacje objęte wyłączeniem')
 
     class Meta:
-        verbose_name = u'Awaria'
-        verbose_name_plural = u'Awarie'
+        verbose_name = u'Wyłączenie'
+        verbose_name_plural = u'Wyłączenia'
 
     def __unicode__(self):
         return u'{} ({} -> {})'.format(self.id, self.start_at, self.end_at)

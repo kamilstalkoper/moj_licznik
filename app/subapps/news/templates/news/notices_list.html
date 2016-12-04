@@ -15,9 +15,9 @@
             {% for notice in notices %}
                 <li>
                     <a href="{% url 'news:notice_view' notice.id %}">
-                        <span>{{ notice.title }}</span>
-                        <span>{{ notice.created_at }}</span>
-                        <span>{{ notice.summary }}</span>
+                        <p>{{ notice.title }}</p>
+                        <p>{{ notice.created_at }}</p>
+                        <p>{{ notice.summary }}</p>
                     </a>
                 </li>
             {% endfor %}

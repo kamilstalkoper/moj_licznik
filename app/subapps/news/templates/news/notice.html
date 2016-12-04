@@ -3,6 +3,7 @@
 {% block title %}{{ notice.title }}{% endblock %}
 
 {% block content %}
+    <a href="{% url 'news:notices_list_view' %}">&laquo; Powrót do listy aktualności</a>
     <div>
         <h1>{{ notice.title }}</h1>
         <span>{{ notice.created_at }}</span>

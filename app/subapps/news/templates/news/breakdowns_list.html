@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Lista wyłączeń{% endblock %}
+
+{% block content %}
+    {% if breakdowns %}
+        <ul>
+            {% for breakdown in breakdowns %}
+                <li>
+                    <a href="{% url 'news:breakdown_view' breakdown.id %}">
+                        <p>Od: {{ breakdown.start_at|date:'l d E Y H:i' }}</p>
+                        <p>Do: {{ breakdown.end_at|date:'l d E Y H:i' }}</p>
+                        <h4>Stacje objęte wyłączeniem:</h4>
+                        <ul>
+                            {% for station in breakdown.stations.all %}
+                                <li>{{ station.address }}</li>
+                            {% endfor %}
+                        </ul>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <span>Brak wyłączeń dla Twojego regionu.</span>
+    {% endif %}
+
+    {% include 'structure/pagination.html' %}
+{% endblock %}

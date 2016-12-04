@@ -77,3 +77,17 @@ class BreakdownsListView(ListView):
         return Breakdown.objects \
             .filter(stations__meterpoint__users=self.request.user) \
             .order_by('-start_at')
+
+
+class BreakdownView(DetailView):
+    context_object_name = 'breakdown'
+    http_method_names = [u'get', ]
+    model = Breakdown
+    pk_url_kwarg = 'breakdown_id'
+    template_name = 'news/breakdown.html'
+
+    def get_queryset(self):
+        return Breakdown.objects \
+            .all() \
+            .prefetch_related('stations') \
+            .order_by('-start_at')

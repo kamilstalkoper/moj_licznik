@@ -3,6 +3,7 @@
 {% block title %}Lista wiadomości w wątku{% endblock %}
 
 {% block content %}
+    <a href="{% url 'news:breakdowns_list_view' %}">&laquo; Powrót do listy wątków</a>
     <form action="{% url 'contact:seng_message_view' problem_id %}" method="post">
         {% csrf_token %}
         <div>
