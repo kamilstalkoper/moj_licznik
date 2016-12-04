@@ -33,6 +33,9 @@ urlpatterns = [
 
     # structure
     url(r'^', include('app.subapps.structure.urls')),
+
+    # backend
+    url(r'^backend/', include('app.subapps.backend.urls', namespace='backend'))
 ]
 
 if settings.DEBUG:

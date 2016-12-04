@@ -15,7 +15,7 @@ def user_main_meter(request):
     main_meter_point = UserMainMeterPoint.objects \
         .filter(user_id=request.user.id) \
         .first()
-    if main_meter_point.meter_point is None:
+    if main_meter_point is None or main_meter_point.meter_point is None:
         return none_dict
 
     main_meter = Meter.objects \

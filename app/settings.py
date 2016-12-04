@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # custom applications
     'app.subapps.accounts',
+    'app.subapps.backend',
     'app.subapps.contact',
     'app.subapps.meters_management',
     'app.subapps.news',

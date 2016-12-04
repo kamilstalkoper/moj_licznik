@@ -1,0 +1,50 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Lista wątków{% endblock %}
+
+{% block content %}
+    <h3>Lista użytkowników</h3>
+    <a href="{% url 'backend:add_user_view' %}">Dodaj nowego użytkownika</a>
+    <div>
+        <form action="{% url 'backend:search_users_view' %}" method="get">
+            <div>
+                <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+                <button type="submit">Szukaj</button>
+            </div>
+        </form>
+    </div>
+    {% if is_searched %}
+        <span>Użytkownicy spełniający kryterium {{ search_phrase }}:</span>
+    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nazwa użytkownika</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Email</th>
+                <th>Status administratora</th>
+                <th>Aktywny</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name|default:'------' }}</td>
+                    <td>{{ user.last_name|default:'------' }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{% if user.is_staff or user.is_superuser %}Tak{% else %}Nie{% endif %}</td>
+                    <td>{{ user.is_active|yesno:'Tak,Nie' }}</td>
+                    <td><a href="{% url 'backend:show_user_profile_view' user.id %}">Wyświetl szczegóły</a></td>
+                </tr>
+            {% empty %}
+                <tr>Brak użytkowników</tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'structure/pagination.html' %}
+{% endblock %}

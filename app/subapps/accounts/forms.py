@@ -72,3 +72,41 @@ class EditUserDataForm(forms.ModelForm):
         self.fields.get('email').required = True
         self.fields.get('first_name').required = False
         self.fields.get('last_name').required = False
+
+
+# ------------------------------------------------------------------------------
+# BACKEND
+# ------------------------------------------------------------------------------
+
+
+class AddUserForm(forms.ModelForm):
+    password1 = forms.CharField()
+    password2 = forms.CharField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'is_active', 'email',
+                  'is_staff']
+
+    def __init__(self, *args, **kwargs):
+        super(AddUserForm, self).__init__(*args, **kwargs)
+        self.fields.get('first_name').required = False
+        self.fields.get('last_name').required = False
+        self.fields.get('is_active').required = False
+        self.fields.get('is_staff').required = False
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                u'Podane hasłe nie pasują do siebie.')
+        self.instance.username = self.cleaned_data.get('username')
+        return password2
+
+    def save(self, commit=True):
+        user = super(AddUserForm, self).save(commit=False)
+        user.set_password(self.cleaned_data.get('password1'))
+        user.save()
+
+        return user
