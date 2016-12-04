@@ -145,6 +145,9 @@
                                             <span class="fa fa-angle-down"></span>
                                         </a>
                                         <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                            {% if request.user.is_stuff or request.user.is_superuser %}
+                                                <li><a href="{% url 'backend:dashboard' %}"> Panel administratora</a></li>
+                                            {% endif %}
                                             <li><a href="{% url 'accounts:profile_view' %}"> Profil</a></li>
                                             <li><a href="{% url 'accounts:password_change' %}"> Zmień hasło</a></li>
                                             <!-- <li>

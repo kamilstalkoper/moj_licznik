@@ -1,0 +1,51 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Profil użytkownika{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Nazwa użytkownika: </h2>
+        <span>{{ editing_user.username }}</span>
+    </div>
+
+    <div>
+        <h2>Email: </h2>
+        <span>{{ editing_user.email }}</span>
+    </div>
+
+    <div>
+        <h2>Imię: </h2>
+        <span>{{ editing_user.first_name|default:'Nie podano' }}</span>
+    </div>
+
+    <div>
+        <h2>Nazwisko: </h2>
+        <span>{{ editing_user.last_name|default:'Nie podano' }}</span>
+    </div>
+
+    <div>
+        <h2>Zarejestrowany od: </h2>
+        <span>{{ editing_user.date_joined|date:'l d E Y' }}</span>
+    </div>
+
+    <div>
+        <h2>Ostatnio zalogowany: </h2>
+        <span>{{ editing_user.last_login|date:'l d E Y G:i' }}</span>
+    </div>
+
+    <div>
+        <h2>Aktywny: </h2>
+        <span>{{ editing_user.is_active|yesno:'Tak,Nie' }}</span>
+    </div>
+
+    <form action="{% url 'backend:change_user_status_view' editing_user.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">
+            {% if editing_user.is_active %}
+                Zablokuj użytkownika
+            {% else %}
+                Przywróć użytkownika
+            {% endif %}
+        </button>
+    </form>
+{% endblock %}
