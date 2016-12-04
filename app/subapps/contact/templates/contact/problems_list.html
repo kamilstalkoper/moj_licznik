@@ -23,19 +23,5 @@
         <span>Brak wątków.</span>
     {% endif %}
 
-    {% if is_paginated %}
-        <div class="pagination">
-			{% if page_obj.has_previous %}
-				<a href="?strona={{ page_obj.previous_page_number }}">&laquo; poprzednia</a>
-			{% else %}
-				<span>&laquo; poprzednia</span>
-			{% endif %}
-			|
-			{% if page_obj.has_next %}
-				<a href="?strona={{ page_obj.next_page_number }}">następna strona &raquo;</a>
-            {% else %}
-                <span>następna strona &raquo;</span>
-			{% endif %}
-        </div>
-	{% endif %}
+    {% include 'structure/pagination.html' %}
 {% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Lista aktualności{% endblock %}
+
+{% block content %}
+    <form action="{% url 'news:search_notices_view' %}" method="get">
+        <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %} required>
+        <button type="submit">Wyszukaj</button>
+    </form>
+    {% if notices %}
+        {% if is_searched %}
+            <span>Aktualności spełniające kryterium {{ search_phrase }}:</span>
+        {% endif %}
+        <ul>
+            {% for notice in notices %}
+                <li>
+                    <a href="{% url 'news:notice_view' notice.id %}">
+                        <span>{{ notice.title }}</span>
+                        <span>{{ notice.created_at }}</span>
+                        <span>{{ notice.summary }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if is_searched %}
+            <span>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</span>
+        {% else %}
+            <span>Brak aktualności.</span>
+        {% endif %}
+    {% endif %}
+
+    {% include 'structure/pagination.html' %}
+{% endblock %}

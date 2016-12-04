@@ -13,7 +13,8 @@ class Breakdown(models.Model):
     start_at = models.DateTimeField(verbose_name=u'Data rozpoczęcia awarii')
     end_at = models.DateTimeField(verbose_name=u'Data zakończenia awarii')
 
-    stations = models.ManyToManyField(Station, verbose_name=u'Stacje objęte awarią')
+    stations = models.ManyToManyField(
+        Station, verbose_name=u'Stacje objęte awarią')
 
     class Meta:
         verbose_name = u'Awaria'
@@ -32,11 +33,16 @@ class Notice(models.Model):
     content_body = models.TextField(verbose_name=u'Treść (markdown)')
     content_html = models.TextField(verbose_name=u'Treść HTML')
 
-    breakdowns = models.ManyToManyField(Breakdown, blank=True, verbose_name=u'Powiązane przerwy w dostawie')
+    breakdowns = models.ManyToManyField(
+        Breakdown, blank=True, verbose_name=u'Powiązane przerwy w dostawie')
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = u'Ogłoszenie'
         verbose_name_plural = u'Ogłoszenia'
 
     def __unicode__(self):
-        return u'{}{}'.format(self.title, u' - Powiązane z wyłączeniem' if self.breakdowns else u'')
+        return u'{}{}'.format(self.title,
+                              u' - Powiązane z wyłączeniem' if self.breakdowns
+                              else u'')

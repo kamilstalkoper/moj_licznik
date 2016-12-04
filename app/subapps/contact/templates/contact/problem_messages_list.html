@@ -35,19 +35,5 @@
         {% endfor %}
     </ul>
 
-    {% if is_paginated %}
-        <div class="pagination">
-			{% if page_obj.has_previous %}
-				<a href="?strona={{ page_obj.previous_page_number }}">&laquo; nowsze wiadomości</a>
-			{% else %}
-				<span>&laquo; nowsze wiadomości</span>
-			{% endif %}
-			|
-			{% if page_obj.has_next %}
-				<a href="?strona={{ page_obj.next_page_number }}">starsze wiadomości &raquo;</a>
-            {% else %}
-                <span>starsze wiadomości &raquo;</span>
-			{% endif %}
-        </div>
-	{% endif %}
+    {% include 'structure/pagination.html' %}
 {% endblock %}
