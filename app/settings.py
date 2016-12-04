@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # custom applications
     'app.subapps.accounts',
     'app.subapps.contact',
+    'app.subapps.meters_management',
     'app.subapps.news',
     'app.subapps.statistics',
     'app.subapps.structure',
@@ -80,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.subapps.meters_management.context_processors.user_main_meter',
             ],
         },
     },

@@ -29,6 +29,11 @@
             {% endwith %}
         </div>
 
+        <div>
+            <label for="id_set_as_main">Ustaw jako licznik główny: </label>
+            <input type="checkbox" id="id_set_as_main" name="set_as_main" {% if form.set_as_main.value %}checked{% endif %}>
+        </div>
+
         <button type="submit">Dodaj</button>
         <button type="reset">Wyczyść</button>
     </form>

@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Moje liczniki{% endblock %}
+
+{% block content %}
+    <a href="{% url 'meter_management:add_meter' %}">Dodaj nowy</a>
+    <ul>
+        {% for meter in meters %}
+            <li>
+                <a href="{%  url 'meter_management:meter_data_view' meter.id %}">
+                    Numer seryjny: {{ meter.serial_number }}
+                    <a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a>
+                </a>
+            </li>
+        {% empty %}
+            <li>Nie masz żadnych dodanych liczników.</li>
+        {% endfor %}
+    </ul>
+
+    {% include 'structure/pagination.html' %}
+{% endblock %}

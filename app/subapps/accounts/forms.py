@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.db.transaction import atomic
 
-from app.subapps.structure.models import MeterPointState
+from app.subapps.structure.models import MeterPointState, UserMainMeterPoint
 
 
 class RegistrationFirstStepForm(forms.Form):
@@ -56,6 +56,8 @@ class RegistrationSecondStepForm(UserCreationForm):
         user.save()
 
         self.meter_point_state.meter_point.users.add(user)
+        UserMainMeterPoint.objects.create(
+            user=user, meter_point=self.meter_point_state.meter_point)
 
         return user
 
@@ -67,30 +69,6 @@ class EditUserDataForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EditUserDataForm, self).__init__(*args, **kwargs)
+        self.fields.get('email').required = True
         self.fields.get('first_name').required = False
         self.fields.get('last_name').required = False
-
-
-class AddMeterForm(RegistrationFirstStepForm):
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(AddMeterForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        cd = super(AddMeterForm, self).clean()
-        meter_serial_number = cd.get('meter_serial_number')
-        ppe_code = cd.get('ppe_code')
-
-        if not (meter_serial_number and ppe_code):
-            # meter_serial_number or ppe_code invalid, do not need more
-            # validation
-            return cd
-
-        if self.meter_point_state.meter_point.users.filter(id=self.user.id)\
-                .exists():
-            self.add_error('meter_serial_number', u'Masz już ten licznik.')
-
-        return cd
-
-    def save(self):
-        self.meter_point_state.meter_point.users.add(self.user)

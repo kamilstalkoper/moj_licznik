@@ -58,7 +58,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="">
+                                        <a>
                                             <i class="fa fa-plug"></i>
                                             Zużycie
                                         </a>
@@ -78,8 +78,14 @@
                                     <li>
                                         <a>
                                             <i class="fa fa-battery-full"></i>
-                                            Licznik
+                                            Liczniki
+                                            <span class="fa fa-chevron-down"></span>
                                         </a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="{% url 'meter_management:meters_list_view' %}">Moje liczniki</a></li>
+                                            <li><a href="{% url 'meter_management:add_meter' %}">Dodaj licznik</a></li>
+                                            <li><a href="{% url 'meter_management:main_meter_change_view' %}">Zmień licznik główny</a></li>
+                                        </ul>
                                     </li>
                                 </ul>
                             </div>
@@ -177,6 +183,33 @@
                                             </li>
                                         </ul>
                                     </li>
+                                    {% if cp_user_meters %}
+                                        <li>
+                                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                Licznik główny: {{ cp_user_main_meter.serial_number }}
+                                                <span class="fa fa-angle-down"></span>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                                {% for meter in cp_user_meters %}
+                                                    <li>
+                                                        {% if meter.id != cp_user_main_meter.id %}
+                                                            <a href="{% url 'meter_management:set_as_main_view' %}?ref={{ request.path }}&meter_serial_number={{ meter.serial_number }}">
+                                                                {{ meter.serial_number }}
+                                                                <span class="badge bg-blue pull-right">
+                                                                    Ustaw jako główny
+                                                                </span>
+                                                            </a>
+                                                        {% else %}
+                                                            <a>
+                                                                {{ meter.serial_number }}
+                                                                <i class="fa fa-check pull-right"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             {% else %}
                                  <ul class="nav navbar-nav navbar-right">
@@ -184,6 +217,12 @@
                                         <a href="{%  url 'authentication:auth_login' %}">
                                             <i class="fa fa-sign-in"></i>
                                             Zaloguj
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{%  url 'authentication:registration_first_step_view' %}">
+                                            <i class="fa fa-sign-in"></i>
+                                            Zarejestruj się
                                         </a>
                                     </li>
                                 </ul>
