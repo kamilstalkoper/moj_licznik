@@ -34,7 +34,9 @@ class AddMeterForm(RegistrationFirstStepForm):
 
     def save(self):
         self.meter_point_state.meter_point.users.add(self.user)
-        if self.cleaned_data.get('set_as_main', False):
+        if self.cleaned_data.get('set_as_main', False) or UserMainMeterPoint\
+                .objects.filter(user_id=self.user.id, meter_point__isnull=True)\
+                .exists():
             UserMainMeterPoint.objects.filter(user_id=self.user.id).update(
                 meter_point=self.meter_point_state.meter_point)
 

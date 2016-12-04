@@ -5,15 +5,19 @@ from app.subapps.structure.models import UserMainMeterPoint, Meter
 
 
 def user_main_meter(request):
+    none_dict = {
+        'user_main_meter': None,
+        'user_meters': None,
+    }
     if request.user.is_anonymous():
-        return {
-            'user_main_meter': None,
-            'user_meters': None,
-        }
+        return none_dict
 
     main_meter_point = UserMainMeterPoint.objects \
         .filter(user_id=request.user.id) \
         .first()
+    if main_meter_point.meter_point is None:
+        return none_dict
+
     main_meter = Meter.objects \
         .filter(meterpointstate__meter_point_id=main_meter_point.meter_point.id,
                 meterpointstate__meter_point__users=request.user) \
