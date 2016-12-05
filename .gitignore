@@ -4,5 +4,8 @@
 # Data base
 db.sqlite3
 
+#venv
+venv
+
 # Python binary
 *.pyc
