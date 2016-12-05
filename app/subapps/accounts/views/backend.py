@@ -89,6 +89,8 @@ class ChangeUserStatusView(View):
         return redirect('backend:show_user_profile_view', user_id=user_id)
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class AddUserView(FormView):
     form_class = AddUserForm
     template_name = 'backend/accounts/add_user.html'

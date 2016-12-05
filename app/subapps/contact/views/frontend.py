@@ -12,8 +12,8 @@ from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views.generic import FormView, TemplateView, ListView
 
-from .forms import NewMessageForm
-from .models import Problem, Message
+from ..forms import NewMessageForm
+from ..models import Problem, Message
 
 
 @method_decorator(login_required, name='dispatch')
@@ -86,6 +86,8 @@ class ProblemMessagesView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ProblemMessagesView, self).get_context_data(**kwargs)
         context['problem_id'] = self.problem_id
+        context['problem_solved'] = Problem.objects.filter(
+            id=self.problem_id, solved=False).exists()
         return context
 
     def get(self, request, *args, **kwargs):
@@ -123,3 +125,46 @@ class SendMessageView(NewProblemView):
     def form_invalid(self, form):
         return redirect('contact:problems_view',
                         problem_id=self.problem.id)
+
+
+@method_decorator(login_required, name='dispatch')
+class SetAsSolvedView(TemplateView):
+    http_method_names = [u'post', ]
+
+    default_redirect_view = 'contact:problems_view'
+    admin_action = False
+
+    def post(self, request, *args, **kwargs):
+        redirect_to = request.POST.get('redirect_to')
+        problem_id = request.POST.get('problem_id', '')
+
+        try:
+            problem_id = int(problem_id)
+        except ValueError:
+            raise Http404
+
+        problem = get_object_or_404(Problem.objects.select_related('user'),
+                                    id=problem_id, solved=False)
+
+        problem.solved = True
+        problem.save()
+        self.send_email_to_user(problem)
+
+        if not redirect_to:
+            return redirect(self.default_redirect_view)
+
+        return redirect(redirect_to)
+
+    def send_email_to_user(self, problem):
+        context = {
+            'problem': problem,
+            'admin_action': self.admin_action,
+        }
+        message = render_to_string(
+            'backend/contact/email/problem_solved_message.html', context)
+        send_mail(
+            subject='Problem został uznany za rozwiązany.',
+            message=message,
+            from_email=settings.SERVER_EMAIL,
+            recipient_list=[problem.user.email, ]
+        )

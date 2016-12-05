@@ -21,7 +21,8 @@ urlpatterns = [
                       namespace='authentication')),
 
     # contact
-    url(r'^kontakt/', include('app.subapps.contact.urls', namespace='contact')),
+    url(r'^kontakt/', include('app.subapps.contact.urls.frontend',
+                              namespace='contact')),
 
     # meters management
     url(r'^zarzadzaj_licznikami/',

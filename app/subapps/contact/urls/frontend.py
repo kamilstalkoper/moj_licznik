@@ -3,8 +3,7 @@
 
 from django.conf.urls import url
 
-from .views import (
-    ProblemsView, NewProblemView, ProblemMessagesView, SendMessageView)
+from ..views.frontend import *
 
 urlpatterns = [
     url(r'^lista_watkow$', ProblemsView.as_view(), name='problems_view'),
@@ -12,5 +11,6 @@ urlpatterns = [
     url(r'^wiadomosci_w_watku/(?P<problem_id>[\d]+)$',
         ProblemMessagesView.as_view(), name='problem_messages_view'),
     url(r'^odpowiedz/(?P<problem_id>[\d]+)$',
-        SendMessageView.as_view(), name='seng_message_view'),
+        SendMessageView.as_view(), name='send_message_view'),
+    url(r'^set_as_solved$', SetAsSolvedView.as_view(), name='set_as_solved')
 ]

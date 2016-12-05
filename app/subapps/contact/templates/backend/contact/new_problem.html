@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Nowy wątek{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_message_content">Wiadomość:</label>
+            <textarea name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
+            {% with form.message_content.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_electrician_needed">Potrzebuję elektryka: </label>
+            <input type="checkbox" name="electrician_needed" id="id_electrician_needed" {% if form.electrician_needed.value %}checked{% endif %}>
+        </div>
+        <div>
+            <label for="id_send_copy_to_me">Wyślij kopię wiadomości do użytkownika: </label>
+            <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" checked>
+        </div>
+
+        <button type="submit">Wyślij</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,20 @@
+Witaj {{ problem.user.username }}!
+
+{% if admin_action %}
+    Problem przez Ciebie podjęty został uznany za rozwiązany przez Administratora.
+{% else %}
+    Problem przez Ciebie podjęty uznałeś za rozwiązany.
+{% endif %}
+
+Przypominamy, ostatnia wiadomość w wątku:
+
+{{ problem.get_last_message.content }}
+
+Cały wątek możesz obejrzeć tutaj:
+http://127.0.0.1{% url 'contact:problem_messages_view' problem.id %}
+
+Jeśli masz jeszcze jakieś pytania zapraszamy do dalszego kontaktu:
+http://127.0.0.1{% url 'contact:new_problem' %}
+
+Pozdrawiamy,
+Zaspół mojLicznik.pl

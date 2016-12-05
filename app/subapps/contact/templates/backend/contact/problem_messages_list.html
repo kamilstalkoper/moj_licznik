@@ -10,7 +10,7 @@
             </div>
             <div class="title_right">
                 <div class="pull-right">
-                    <a href="{% url 'contact:problems_view' %}">&laquo; Powrót do listy wątków</a>
+                    <a href="{% url 'backend:backend_problems_view' %}">&laquo; Powrót do listy wątków</a>
                     {% if problem_solved %}
                         <form method="post" action="{% url 'contact:set_as_solved' %}">
                             {% csrf_token %}
@@ -36,7 +36,7 @@
                     </div>
                     <div class="x_content">
                         <div class="col-md-9 col-sm-9 col-xs-12">
-                            <form action="{% url 'contact:send_message_view' problem_id %}" method="post">
+                            <form action="{% url 'backend:backend_send_message_view' problem_id %}" method="post">
                                 {% csrf_token %}
                                 <div>
                                     <label for="id_message_content">Wiadomość:</label>
@@ -50,8 +50,8 @@
                                     {% endwith %}
                                 </div>
                                 <div>
-                                    <label for="id_send_copy_to_me">Wyślij kopię wiadomości również do mnie: </label>
-                                    <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" {% if form.id_send_copy_to_me.value %}checked{% endif %}>
+                                    <label for="id_send_copy_to_me">Wyślij kopię wiadomości do użytkownika: </label>
+                                    <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" checked>
                                 </div>
                                 <button type="submit">Wyślij</button>
                             </form>

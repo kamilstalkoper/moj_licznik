@@ -10,5 +10,8 @@ urlpatterns = [
     url(r'^$', BackendDashboardView.as_view(), name='dashboard'),
 
     # backend accounts
-    url(r'^konta/', include('app.subapps.accounts.urls.backend'))
+    url(r'^konta/', include('app.subapps.accounts.urls.backend')),
+
+    # backend contact
+    url(r'^kontakt/', include('app.subapps.contact.urls.backend')),
 ]

@@ -27,6 +27,7 @@
                 <th>Status administratora</th>
                 <th>Aktywny</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
                     <td>{% if user.is_staff or user.is_superuser %}Tak{% else %}Nie{% endif %}</td>
                     <td>{{ user.is_active|yesno:'Tak,Nie' }}</td>
                     <td><a href="{% url 'backend:show_user_profile_view' user.id %}">Wyświetl szczegóły</a></td>
+                    <td><a href="{% url 'backend:backend_new_problem_view' user.id %}">Napisz wiadomość</a></td>
                 </tr>
             {% empty %}
                 <tr>Brak użytkowników</tr>

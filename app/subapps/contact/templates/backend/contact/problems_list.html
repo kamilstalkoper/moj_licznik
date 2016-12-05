@@ -1,28 +1,27 @@
-{% extends 'base/base.html' %}
+{% extends 'base/backend.html' %}
 
 {% block title %}Lista wątków{% endblock %}
 
 {% block content %}
-    <a href="{% url 'contact:new_problem' %}">Napisz do Nas</a>
     {% if problems %}
         <ul>
             {% for problem in problems %}
                 {% with problem.get_last_message as last_message %}
                     <li>
-                        <a href="{% url 'contact:problem_messages_view' problem.id %}">
+                        <a href="{% url 'backend:backend_problem_messages_view' problem.id %}">
                             <p>Rozwiązany: {{ problem.solved|yesno:'Tak,Nie' }}</p>
                             <p>Żądanie elektryka: {{ problem.solved|yesno:'Tak,Nie' }}</p>
                             <p>Data ostatniej wiadomości: {{ last_message.created_at }}</p>
                             <p>Ostatnia wiadomość: {{ last_message.content }}</p>
-                            {% if not problem.solved %}
-                                <form method="post" action="{% url 'contact:set_as_solved' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="problem_id" value="{{ problem.id }}">
-                                    <input type="hidden" name="redirect_to" value="{{ request.path }}">
-                                    <button class="btn btn-success">Oznacz jako rozwiązany</button>
-                                </form>
-                            {% endif %}
                         </a>
+                        {% if not problem.solved %}
+                            <form method="post" action="{% url 'backend:backend_set_as_solved' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="problem_id" value="{{ problem.id }}">
+                                <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                                <button class="btn btn-success">Oznacz jako rozwiązany</button>
+                            </form>
+                        {% endif %}
                     </li>
                 {% endwith %}
             {% endfor %}
