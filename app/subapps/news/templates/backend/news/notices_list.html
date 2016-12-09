@@ -1,0 +1,44 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Lista aktualności{% endblock %}
+
+{% block content %}
+    <a href="{% url 'backend:create_notice_view' %}">Dodaj nową</a>
+    <div class="mid_center">
+        <form method="get">
+            <div class="col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Szukaj</button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if notices %}
+        {% if is_searched %}
+            <span>Aktualności spełniające kryterium {{ search_phrase }}:</span>
+        {% endif %}
+        <ul>
+            {% for notice in notices %}
+                <li>
+                    <a href="{% url 'backend:backend_notice_view' notice.id %}">
+                        <p>{{ notice.title }}</p>
+                        <p>{{ notice.created_at }}</p>
+                        <p>{{ notice.summary }}</p>
+                    </a>
+                    <a href="{% url 'backend:edit_notice_view' notice.id %}">Edytuj</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if is_searched %}
+            <span>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</span>
+        {% else %}
+            <span>Brak aktualności.</span>
+        {% endif %}
+    {% endif %}
+
+    {% include 'structure/pagination.html' %}
+{% endblock %}

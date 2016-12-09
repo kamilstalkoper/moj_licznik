@@ -29,7 +29,7 @@ class ProblemsView(ListView):
         return Problem.objects \
             .filter(user_id=self.request.user.id) \
             .annotate(last_message=Max('message__created_at')) \
-            .order_by('-solved', '-last_message')
+            .order_by('solved', '-last_message')
 
 
 @method_decorator(login_required, name='dispatch')

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 from app.subapps.structure.models import Station
 
@@ -22,7 +23,13 @@ class Breakdown(models.Model):
         verbose_name_plural = u'Wyłączenia'
 
     def __unicode__(self):
-        return u'{} ({} -> {})'.format(self.id, self.start_at, self.end_at)
+        return u'({} -> {}) {}...'.format(
+            self.start_at.strftime('%d-%B-%Y %H:%M'),
+            self.end_at.strftime('%d-%B-%Y %H:%M'),
+            self.reason[0:15] if self.reason else u'')
+
+    def get_stations_choices(self):
+        return [station.id for station in self.stations]
 
 
 class Notice(models.Model):

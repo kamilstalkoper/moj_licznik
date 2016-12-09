@@ -1,0 +1,27 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Szczegóły wyłączenia{% endblock %}
+
+{% block content %}
+    <a href="{% url 'backend:backend_breakdowns_list_view' %}">&laquo; Powrót do listy wyłączeń</a>
+    <a href="{% url 'backend:edit_breakdown_view' breakdown.id %}">Edytuj</a>
+    <div>
+        <h3>Od: {{ breakdown.start_at|date:'l d E Y H:i' }}</h3>
+        <h3>Do: {{ breakdown.end_at|date:'l d E Y H:i' }}</h3>
+        {% if breakdown.reason %}
+            <div>
+                <h4>Powód:</h4>
+                <p>{{ breakdown.reason }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <h3>Lista stacji podlegających wyłączeniu:</h3>
+        <ul>
+            {% for station in breakdown.stations.all %}
+                <li>{{ station.address }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
