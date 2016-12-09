@@ -1,0 +1,84 @@
+{% extends 'base/backend.html' %}
+
+{% load news %}
+
+{% block title %}Nowy wątek{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_users">Użytkownik:</label>
+            <select multiple="multiple" id="id_users" name="users">
+                {% with form.users.value|strings_list_as_int_list as users_list %}
+                    {% for user_id, username in form.users.field.choices %}
+                        <option value="{{ user_id }}" {% if user_id in users_list %}selected{% endif %}>{{ username }}</option>
+                    {% endfor %}
+                {% endwith %}
+            </select>
+            {% with form.users.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_title">Tytuł:</label>
+            <input id="id_title" maxlength="200" name="title" type="text" value="{{ form.title.value|default:'' }}">
+            {% with form.title.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_summary">Podsumowanie:</label>
+            <input id="id_summary" maxlength="500" name="summary" type="text" value="{{ form.summary.value|default:'' }}" required>
+            {% with form.summary.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_content_body">Treść (markdown):</label>
+            <textarea cols="40" id="id_content_body" name="content_body" rows="10" required="">{{ form.content_body.value|default:'' }}</textarea>
+            {% with form.content_body.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <div>
+            <label for="id_breakdowns">Powiązane przerwy w dostawie:</label>
+            <select multiple="multiple" id="id_breakdowns" name="breakdowns">
+                {% with form.breakdowns.value|strings_list_as_int_list as breakdowns_list %}
+                    {% for breakdown_id, breakdown_label in form.breakdowns.field.choices %}
+                        <option value="{{ breakdown_id }}" {% if breakdown_id in breakdowns_list %}selected{% endif %}>{{ breakdown_label }}</option>
+                    {% endfor %}
+                {% endwith %}
+            </select>
+            {% with form.breakdowns.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Zatwierdź</button>
+    </form>
+{% endblock %}

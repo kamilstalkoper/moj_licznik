@@ -14,4 +14,7 @@ urlpatterns = [
 
     # backend contact
     url(r'^kontakt/', include('app.subapps.contact.urls.backend')),
+
+    # backend news
+    url(r'^aktualnosci/', include('app.subapps.news.urls.backend')),
 ]

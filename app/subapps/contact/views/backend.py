@@ -6,13 +6,11 @@ from __future__ import absolute_import
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Max
 from django.shortcuts import get_object_or_404, Http404, redirect
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
-from django.views.generic import FormView, ListView
 
 from .frontend import (
     SetAsSolvedView, ProblemsView, NewProblemView, ProblemMessagesView)
@@ -28,7 +26,7 @@ class BackendProblemsView(ProblemsView):
         return Problem.objects \
             .all() \
             .annotate(last_message=Max('message__created_at')) \
-            .order_by('-solved', '-last_message')
+            .order_by('solved', '-last_message')
 
 
 @method_decorator(staff_member_required(login_url='authentication:auth_login'),
