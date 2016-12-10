@@ -1,0 +1,58 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Dane licznika{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Nazwa modelu: </h2>
+        <span>{{ meter.model_name }}</span>
+    </div>
+
+    <div>
+        <h2>Numer seryjny: </h2>
+        <span>{{ meter.serial_number }}</span>
+    </div>
+
+    <div>
+        <h2>Aktywny: </h2>
+        <span>{{ meter.is_active|yesno:'Tak,Nie' }}</span>
+    </div>
+
+    <div>
+        <h2>Data wykrycia przez system: </h2>
+        <span>{{ meter.detection_report_date|date:'l d E Y G:i' }}</span>
+    </div>
+
+    <div>
+        <h2>Połączony ze stacją: </h2>
+        <span>{{ meter.station.address }}</span>
+    </div>
+
+    <a href="{% url 'backend:delete_meter_view' meter.id %}">Usuń licznik</a>
+    <a href="{% url 'backend:edit_meter_view' meter.id %}">Edytuj dane licznika</a>
+
+    <h3>Lista użytkowników powiązanych z licznikiem:</h3>
+    <a href="{% url 'backend:change_meter_owners_view' meter.id %}">Edytuj listę</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Lp.</th>
+                <th>Nazwa użytkownika</th>
+                <th>Email</th>
+                <th>Aktywny</th>
+                <th>W zespole</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in meter_users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email|default:'------' }}</td>
+                    <td>{{ user.is_active|yesno:'Tak,Nie' }}</td>
+                    <td>{{ user.is_staff|yesno:'Tak,Nie' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

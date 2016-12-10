@@ -4,9 +4,10 @@
 from __future__ import absolute_import
 
 from django import forms
+from django.contrib.auth.models import User
 
 from app.subapps.accounts.forms import RegistrationFirstStepForm
-from app.subapps.structure.models import MeterPointState, UserMainMeterPoint
+from app.subapps.structure.models import UserMeterPoint, MeterPoint
 
 
 class AddMeterForm(RegistrationFirstStepForm):
@@ -26,24 +27,32 @@ class AddMeterForm(RegistrationFirstStepForm):
             # validation
             return cd
 
-        if self.meter_point_state.meter_point.users.filter(id=self.user.id)\
+        if self.meter_point_state.meter_point.users.filter(id=self.user.id) \
                 .exists():
             self.add_error('meter_serial_number', u'Masz już ten licznik.')
 
         return cd
 
     def save(self):
-        self.meter_point_state.meter_point.users.add(self.user)
-        if self.cleaned_data.get('set_as_main', False) or UserMainMeterPoint\
-                .objects.filter(user_id=self.user.id, meter_point__isnull=True)\
+        UserMeterPoint.objects.create(
+            user=self.user, meter_point=self.meter_point_state.meter_point)
+        if self.cleaned_data.get('set_as_main', False) or not UserMeterPoint \
+                .objects.filter(user_id=self.user.id, is_main_meter_point=True)\
                 .exists():
-            UserMainMeterPoint.objects.filter(user_id=self.user.id).update(
-                meter_point=self.meter_point_state.meter_point)
+            UserMeterPoint.objects \
+                .filter(user_id=self.user.id, is_main_meter_point=True) \
+                .update(is_main_meter_point=False)
+
+            UserMeterPoint.objects\
+                .filter(
+                    user_id=self.user.id,
+                    meter_point_id=self.meter_point_state.meter_point.id)\
+                .update(is_main_meter_point=True)
 
 
 class ChangeMainMeterForm(forms.Form):
-    meter_serial_number = forms.CharField(max_length=255)
-    meter_point_state = None
+    meter_point_id = forms.IntegerField()
+    user_meter_point = None
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -51,27 +60,55 @@ class ChangeMainMeterForm(forms.Form):
 
     def clean(self):
         cd = super(ChangeMainMeterForm, self).clean()
-        meter_serial_number = cd.get('meter_serial_number')
+        meter_point_id = cd.get('meter_point_id')
 
-        if not meter_serial_number:
+        if not meter_point_id:
             # meter_serial_number invalid
             return cd
 
-        self.meter_point_state = MeterPointState.objects \
-            .filter(meter__serial_number=meter_serial_number) \
+        self.user_meter_point = UserMeterPoint.objects \
+            .filter(meter_point_id=meter_point_id, user_id=self.user.id) \
             .first()
 
-        if self.meter_point_state is None:
-            self.add_error('meter_serial_number', u'Błędny numer licznika.')
-
-        if UserMainMeterPoint.objects.filter(
-                meter_point=self.meter_point_state.meter_point,
-                user_id=self.user.id).exists():
-            self.add_error('meter_serial_number',
+        if self.user_meter_point is None:
+            self.add_error(
+                'meter_point_id', u'Błędny numer punktu poboru energii.')
+        elif self.user_meter_point.is_main_meter_point:
+            self.add_error('meter_point_id',
                            u'Ten licznik jest już ustawiony jako główny.')
 
         return cd
 
     def save(self):
-        UserMainMeterPoint.objects.filter(user_id=self.user.id).update(
-            meter_point=self.meter_point_state.meter_point)
+        UserMeterPoint.objects \
+            .filter(user_id=self.user.id, is_main_meter_point=True) \
+            .update(is_main_meter_point=False)
+
+        UserMeterPoint.objects \
+            .filter(
+                user_id=self.user.id,
+                meter_point_id=self.cleaned_data.get('meter_point_id')) \
+            .update(is_main_meter_point=True)
+
+
+class ChangeMeterUsersForm(forms.Form):
+    users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(is_active=True))
+
+    def __init__(self, *args, **kwargs):
+        self.meter_id = kwargs.pop('meter_id', None)
+        super(ChangeMeterUsersForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        UserMeterPoint.objects \
+            .filter(meter_point__meterpointstate__meter_id=self.meter_id) \
+            .exclude(user__in=self.cleaned_data.get('users')) \
+            .delete()
+
+        meter_point = MeterPoint.objects.filter(
+            meterpointstate__meter_id=self.meter_id).last()
+
+        for user in self.cleaned_data.get('users'):
+            UserMeterPoint.objects.get_or_create(
+                meter_point=meter_point, user=user,
+            )

@@ -17,4 +17,8 @@ urlpatterns = [
 
     # backend news
     url(r'^aktualnosci/', include('app.subapps.news.urls.backend')),
+
+    # backend meters management
+    url(r'^zarzadzanie_licznikami/',
+        include('app.subapps.meters_management.urls.backend')),
 ]

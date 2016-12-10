@@ -5,7 +5,6 @@ from __future__ import absolute_import
 
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
 from django.utils.html import escape
 from django.views.generic import ListView, FormView, UpdateView
 

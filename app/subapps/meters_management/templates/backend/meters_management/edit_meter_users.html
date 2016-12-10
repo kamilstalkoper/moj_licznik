@@ -1,0 +1,29 @@
+{% extends 'base/backend.html' %}
+
+{% load news %}
+
+{% block title %}Usuń licznik{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_users">Użytkownicy:</label>
+            <select multiple="multiple" id="id_users" name="users" required>
+                {% with form.users.value|strings_list_as_int_list as users_list %}
+                    {% for user_id, username in form.users.field.choices %}
+                        <option value="{{ user_id }}" {% if user_id in users_list %}selected{% endif %}>{{ username }}</option>
+                    {% endfor %}
+                {% endwith %}
+            </select>
+            {% with form.users.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <button type="submit">Zapisz</button>
+    </form>
+{% endblock %}
