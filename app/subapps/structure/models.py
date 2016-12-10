@@ -47,21 +47,25 @@ class Meter(models.Model):
         return u'{} [{}]'.format(self.serial_number, self.station)
 
 
-class UserMainMeterPoint(models.Model):
-    user = models.OneToOneField(User, verbose_name=u'Użytkownik')
-    meter_point = models.ForeignKey('MeterPoint', null=True, blank=True,
-                                    verbose_name=u'Punkt pomiaru')
+class UserMeterPoint(models.Model):
+    user = models.ForeignKey(User, verbose_name=u'Użytkownik')
+    meter_point = models.ForeignKey('MeterPoint', verbose_name=u'Punkt pomiaru')
+
+    is_main_meter_point = models.NullBooleanField(
+        default=False, null=True, blank=True, verbose_name=u'Licznik główny?')
+    alias = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=u'Alias')
 
     class Meta:
-        verbose_name = u'Licznik główny'
-        verbose_name_plural = u'Liczniki główne'
+        verbose_name = u'Punkt poboru energii - Użytkownik'
+        verbose_name_plural = u'Punkty poboru energii - Użytkownicy'
 
     def __unicode__(self):
         return u'{} => {}'.format(self.user, self.meter_point)
 
 
 class MeterPoint(models.Model):
-    users = models.ManyToManyField(User, blank=True,
+    users = models.ManyToManyField(User, blank=True, through='UserMeterPoint',
                                    verbose_name=u'Użytkownicy')
 
     name = models.CharField(max_length=255, verbose_name=u'Nazwa')

@@ -14,8 +14,6 @@ urlpatterns = [
     url(r'^dodaj_licznik$', AddMeterView.as_view(), name='add_meter'),
     url(r'^licznik/(?P<meter_id>[\d]+)$', MeterDataView.as_view(),
         name='meter_data_view'),
-    url(r'^zmien_licznik_glowny$', MainMeterChangeView.as_view(),
-        name='main_meter_change_view'),
     url(r'^ustaw_jako_glowny$', SetMeterAsMainView.as_view(),
         name='set_as_main_view'),
 ]

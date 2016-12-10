@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.db.transaction import atomic
 
-from app.subapps.structure.models import MeterPointState, UserMainMeterPoint
+from app.subapps.structure.models import MeterPointState, UserMeterPoint
 
 
 class RegistrationFirstStepForm(forms.Form):
@@ -55,9 +55,9 @@ class RegistrationSecondStepForm(UserCreationForm):
         user.email = self.cleaned_data.get('email')
         user.save()
 
-        self.meter_point_state.meter_point.users.add(user)
-        UserMainMeterPoint.objects.create(
-            user=user, meter_point=self.meter_point_state.meter_point)
+        UserMeterPoint.objects.create(
+            user=user, meter_point=self.meter_point_state.meter_point,
+            is_main_meter_point=True)
 
         return user
 

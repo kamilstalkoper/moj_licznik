@@ -7,7 +7,7 @@ from django.contrib import admin
 
 from .models import (
     Station, Meter, MeterPoint, TariffZone, TariffDefinition, MeterPointState,
-    MeterObject, MeterData, Alarm, UserMainMeterPoint)
+    MeterObject, MeterData, Alarm, UserMeterPoint)
 
 
 class StationAdmin(admin.ModelAdmin):
@@ -16,9 +16,9 @@ class StationAdmin(admin.ModelAdmin):
 admin.site.register(Station, StationAdmin)
 
 
-class UserMainMeterPointAdmin(admin.ModelAdmin):
-    list_display = ('user', 'meter_point')
-admin.site.register(UserMainMeterPoint, UserMainMeterPointAdmin)
+class UserMeterPointAdmin(admin.ModelAdmin):
+    list_display = ('user', 'meter_point', 'alias', 'is_main_meter_point')
+admin.site.register(UserMeterPoint, UserMeterPointAdmin)
 
 
 class MeterAdmin(admin.ModelAdmin):

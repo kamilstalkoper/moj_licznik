@@ -1,31 +1,41 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from app.subapps.structure.models import UserMainMeterPoint, Meter
+from app.subapps.structure.models import UserMeterPoint, Meter
 
 
 def user_main_meter(request):
-    none_dict = {
-        'user_main_meter': None,
-        'user_meters': None,
+    context = {
+        'cp_user_main_meter_point': None,
+        'cp_user_meter_points': [],
     }
     if request.user.is_anonymous():
-        return none_dict
+        return context
 
-    main_meter_point = UserMainMeterPoint.objects \
-        .filter(user_id=request.user.id) \
-        .first()
-    if main_meter_point is None or main_meter_point.meter_point is None:
-        return none_dict
+    user_meter_points = UserMeterPoint.objects.filter(user_id=request.user.id)
 
-    main_meter = Meter.objects \
-        .filter(meterpointstate__meter_point_id=main_meter_point.meter_point.id,
-                meterpointstate__meter_point__users=request.user) \
-        .first()
-    user_meters = Meter.objects \
-        .filter(meterpointstate__meter_point__users=request.user)
+    for user_meter_point in user_meter_points:
+        meter_point_dict = get_meter_data_dict(user_meter_point)
+        if user_meter_point.is_main_meter_point:
+            context['cp_user_main_meter_point'] = meter_point_dict
+
+        context['cp_user_meter_points'].append(meter_point_dict)
+    return context
+
+
+def get_meter_data_dict(user_meter_point):
+    related_meter = Meter.objects\
+        .filter(
+            meterpointstate__meter_point_id=user_meter_point.meter_point_id)\
+        .last()
+
+    if user_meter_point.alias:
+        visible_name = user_meter_point.alias
+    else:
+        visible_name = related_meter.serial_number if related_meter else ''
 
     return {
-        'cp_user_main_meter': None if main_meter is None else main_meter,
-        'cp_user_meters': user_meters,
+        'visible_name': visible_name,
+        'meter_point_id': user_meter_point.meter_point.id,
+        'is_main_meter_point': user_meter_point.is_main_meter_point,
     }

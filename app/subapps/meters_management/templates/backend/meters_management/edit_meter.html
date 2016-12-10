@@ -1,0 +1,71 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Dodaj licznik{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_model_name">Nazwa modelu:</label>
+            <input id="id_model_name" maxlength="255" name="model_name" type="text" value="{{ form.model_name.value|default:'' }}">
+            {% with form.model_name.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <div>
+            <label for="id_serial_number">Numer seryjny:</label>
+            <input id="id_serial_number" maxlength="255" name="serial_number" type="text" value="{{ form.serial_number.value }}" required>
+            {% with form.serial_number.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <div>
+            <label for="id_is_active">Aktywny?</label>
+            <input {% if form.is_active.value %}checked{% endif %} id="id_is_active" name="is_active" type="checkbox">
+            {% with form.is_active.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <div>
+            <label for="id_detection_report_date">Data wykrycia licznika przez AMI:</label>
+            <span>{{ form.detection_report_date.value }}</span>
+            <input type="hidden" name="detection_report_date" value="{{ form.detection_report_date.value|date:'Y-m-d H:i:s' }}">
+            {% with form.detection_report_date.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+        <div>
+            <label for="id_station">Stacja:</label>
+            <select id="id_station" name="station" required>
+                {% for val, description in form.station.field.choices %}
+                    <option value="{{ val }}" {% if form.station.value == val %}selected{% endif %}>{{ description }}</option>
+                {% endfor %}
+            </select>
+            {% with form.station.errors as errors %}
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endwith %}
+        </div>
+
+        <button type="submit">Zapisz</button>
+    </form>
+{% endblock %}

@@ -84,7 +84,6 @@
                                         <ul class="nav child_menu">
                                             <li><a href="{% url 'meter_management:meters_list_view' %}">Moje liczniki</a></li>
                                             <li><a href="{% url 'meter_management:add_meter' %}">Dodaj licznik</a></li>
-                                            <li><a href="{% url 'meter_management:main_meter_change_view' %}">Zmień licznik główny</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -186,25 +185,25 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    {% if cp_user_meters %}
+                                    {% if cp_user_meter_points %}
                                         <li>
                                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                Licznik główny: {{ cp_user_main_meter.serial_number }}
+                                                Licznik główny: {{ cp_user_main_meter_point.visible_name }}
                                                 <span class="fa fa-angle-down"></span>
                                             </a>
                                             <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                                {% for meter in cp_user_meters %}
+                                                {% for meter_point in cp_user_meter_points %}
                                                     <li>
-                                                        {% if meter.id != cp_user_main_meter.id %}
-                                                            <a href="{% url 'meter_management:set_as_main_view' %}?ref={{ request.path }}&meter_serial_number={{ meter.serial_number }}">
-                                                                {{ meter.serial_number }}
+                                                        {% if not meter_point.is_main_meter_point %}
+                                                            <a href="{% url 'meter_management:set_as_main_view' %}?ref={{ request.path }}&meter_point_id={{ meter_point.meter_point_id }}">
+                                                                {{ meter_point.visible_name }}
                                                                 <span class="badge bg-blue pull-right">
                                                                     Ustaw jako główny
                                                                 </span>
                                                             </a>
                                                         {% else %}
                                                             <a>
-                                                                {{ meter.serial_number }}
+                                                                {{ meter_point.visible_name }}
                                                                 <i class="fa fa-check pull-right"></i>
                                                             </a>
                                                         {% endif %}

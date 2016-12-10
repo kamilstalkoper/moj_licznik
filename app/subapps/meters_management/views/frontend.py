@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, Http404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, DeleteView, FormView, ListView
 
-from app.subapps.structure.models import Meter, MeterPoint, UserMainMeterPoint
+from app.subapps.structure.models import Meter, MeterPoint, UserMeterPoint
 
 from ..forms import AddMeterForm, ChangeMainMeterForm
 
@@ -29,6 +29,7 @@ class MetersListView(ListView):
 
 @method_decorator(login_required, name='dispatch')
 class RemoveMeterView(DeleteView):
+    http_method_names = [u'get', u'post']
     template_name = 'meter_management/remove_meter.html'
     pk_url_kwarg = 'meter_id'
     success_url = 'meter_management:meters_list_view'
@@ -57,10 +58,9 @@ class RemoveMeterView(DeleteView):
                     meterpointstate__meter=self.object.id) \
             .first()
         if meter_point is not None:
-            meter_point.users.remove(self.request.user)
-            UserMainMeterPoint.objects\
-                .filter(user_id=self.request.user.id, meter_point=meter_point) \
-                .update(meter_point=None)
+            UserMeterPoint.objects\
+                .filter(meter_point_id=meter_point.id, user_id=request.user.id)\
+                .delete()
         return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):
@@ -102,27 +102,6 @@ class MeterDataView(DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class MainMeterChangeView(FormView):
-    form_class = ChangeMainMeterForm
-    template_name = 'meter_management/change_main_meter.html'
-    http_method_names = [u'get', u'post']
-
-    def get_context_data(self, **kwargs):
-        context = super(MainMeterChangeView, self).get_context_data(**kwargs)
-        context['user_meters'] = Meter.objects \
-            .filter(meterpointstate__meter_point__users=self.request.user)
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super(MainMeterChangeView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        form.save()
-        return redirect('meter_management:meters_list_view')
-
-
 class SetMeterAsMainView(FormView):
     form_class = ChangeMainMeterForm
     http_method_names = [u'get', ]

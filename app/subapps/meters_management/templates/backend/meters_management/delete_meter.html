@@ -1,0 +1,16 @@
+{% extends 'base/backend.html' %}
+
+{% block title %}Usuń licznik{% endblock %}
+
+{% block content %}
+    <div>
+        Czy na pewno chcesz usunąć licznik {{ meter.serial_number }}?
+        Pamiętaj, że spowoduje to usunięcie wszystkich powiązanych z nim obiektów...
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Tak, chcę</button>
+    </form>
+
+    <a href="{% url 'backend:meters_list_view' %}">Może jedna zostawię...</a>
+{% endblock %}
