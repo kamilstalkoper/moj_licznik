@@ -1,28 +1,37 @@
-{% extends 'base/base.html' %}
+{% extends 'base/account_base.html' %}
 
-{% block title %}Zaloguj{% endblock %}
+{% block title %}Zaloguj sie{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        {% if form.errors %}
-            <p class="error-validation">Błędny login i/lub hasło.</p>
-        {% endif %}
-        <div>
-            <label for="id_username">Nazwa użytkownika:</label>
-            <input type="text" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}">
-        </div>
-
-        <div>
-            <label for="id_password">Hasło:</label>
-            <input type="password" name="password" id="id_password" maxlength="255">
-        </div>
-
-        <input type="hidden" name="next" value="{{ next }}">
-        <button type="submit">Zaloguj</button>
-    </form>
-
+<form method="post">
+    {% csrf_token %}
+    {% if form.errors %}
+    <p class="error-validation">Błędny login i/lub hasło.</p>
+    {% endif %}
+    <h1>Zaloguj się</h1>
     <div>
-        <a href="{% url 'authentication:password_reset' %}">Nie pamiętasz hasła?</a>
+        <input type="text" class="form-control" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}" placeholder="Nazwa użytkownika">
     </div>
+    <div>
+        <input type="password" class="form-control" name="password" id="id_password" maxlength="255" placeholder="Hasło">
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-default submit" type="submit">Zaloguj</button>
+
+    <div class="clearfix"></div>
+
+    <div class="separator">
+        <p class="change_link">
+            Nie pamiętasz hasła?
+            <a href="{% url 'authentication:password_reset' %}" class="to_register"> Zresetuj je</a>
+        </p>
+
+        <div class="clearfix"></div>
+        <p class="change_link">
+            Nie posiadasz konta?
+            <a href="#" class="to_register"> Załóż je</a>
+        </p>
+    </div>
+</form>
 {% endblock %}
