@@ -32,6 +32,6 @@ class BackendDashboardView(TemplateView):
                 breakdowns__isnull=False).distinct().count(),
             'meters_count': Meter.objects.all().count(),
             'meter_points_count': MeterPoint.objects.all().count(),
-            'meter_pints_users_count': MeterPoint.objects.filter(
+            'meter_points_users_count': MeterPoint.objects.filter(
                 users__isnull=False).distinct().count(),
         }

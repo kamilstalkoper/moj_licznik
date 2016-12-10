@@ -11,7 +11,7 @@
                     <li>
                         <a href="{% url 'contact:problem_messages_view' problem.id %}">
                             <p>Rozwiązany: {{ problem.solved|yesno:'Tak,Nie' }}</p>
-                            <p>Żądanie elektryka: {{ problem.solved|yesno:'Tak,Nie' }}</p>
+                            <p>Żądanie elektryka: {{ problem.electrician_needed|yesno:'Tak,Nie' }}</p>
                             <p>Data ostatniej wiadomości: {{ last_message.created_at }}</p>
                             <p>Ostatnia wiadomość: {{ last_message.content }}</p>
                             {% if not problem.solved %}

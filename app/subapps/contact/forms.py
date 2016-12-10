@@ -17,6 +17,7 @@ class NewMessageForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         self.problem = kwargs.pop('problem', None)
+        self.is_admin_replay = kwargs.pop('is_admin_replay', False)
         super(NewMessageForm, self).__init__(*args, **kwargs)
 
     @atomic
@@ -28,6 +29,7 @@ class NewMessageForm(forms.Form):
                 electrician_needed=cd.get('electrician_needed', False))
 
         message = Message.objects.create(
-            problem=self.problem, content=cd.get('message_content', ''))
+            problem=self.problem, content=cd.get('message_content', ''),
+            is_admin_replay=self.is_admin_replay)
 
         return message

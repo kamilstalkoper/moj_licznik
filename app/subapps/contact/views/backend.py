@@ -46,6 +46,7 @@ class BackendNewProblemView(NewProblemView):
     def get_form_kwargs(self):
         kwargs = super(BackendNewProblemView, self).get_form_kwargs()
         kwargs['user'] = self.user
+        kwargs['is_admin_replay'] = True
         return kwargs
 
     def redirect(self):
@@ -90,6 +91,7 @@ class BackendSendMessageView(BackendNewProblemView):
             .filter(id=kwargs.get('problem_id')).first()
         if self.problem is None:
             raise Http404
+        kwargs['user_id'] = self.problem.user.id
         return super(BackendSendMessageView, self).post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
