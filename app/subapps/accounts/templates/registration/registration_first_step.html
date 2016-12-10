@@ -1,35 +1,37 @@
-{% extends 'base/base.html' %}
+{% extends 'base/account_base.html' %}
 
 {% block title %}Dane podstawowe{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_meter_serial_number">Numer seryjny licznika:</label>
-            <input type="text" name="meter_serial_number" id="id_meter_serial_number" maxlength="255" value="{{ form.meter_serial_number.value|default:'' }}" required>
-            {% with form.meter_serial_number.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
 
-        <div>
-            <label for="id_ppe_code">Kod PPE:</label>
-            <input type="text" name="ppe_code" id="id_ppe_code" maxlength="255" value="{{ form.ppe_code.value|default:'' }}" required>
-            {% with form.ppe_code.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+<form method="post">
+    {% csrf_token %}
+    <h1>Rejestracja </h1>
+    <div>
+        <input type="text" class="form-control" name="meter_serial_number" id="id_meter_serial_number" maxlength="255" value="{{ form.meter_serial_number.value|default:'' }}" placeholder="Numer seryjny licznika" required>
+        {% with form.meter_serial_number.errors as errors %}
+        <ul>
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endwith %}
+    </div>
+    <div>
+        <input type="text" class="form-control" name="ppe_code" id="id_ppe_code" maxlength="255" value="{{ form.ppe_code.value|default:'' }}" placeholder="Kod PPE" required>
+        {% with form.ppe_code.errors as errors %}
+        <ul>
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endwith %}
+    </div>
 
-        <button type="submit">Dalej</button>
-        <button type="reset">Wyczyść</button>
-    </form>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-default submit" type="submit">Dalej</button>
+    <button class="btn btn-default submit" type="reset">Wyczyść</button>
+
+    <div class="clearfix"></div>
+</form>
 {% endblock %}
