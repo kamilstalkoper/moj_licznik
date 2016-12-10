@@ -3,36 +3,53 @@
 {% block title %}Profil użytkownika{% endblock %}
 
 {% block content %}
-    <div>
-        <h2>Nazwa użytkownika: </h2>
-        <span>{{ request.user.username }}</span>
+<div class="page-title">
+    <div class="title_left">
+        <h3>Profil użytkownika</h3>
     </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Dane klienta</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_username">Nazwa użytkownika</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="username" id="id_username"  value="{{ request.user.username }}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_user_email">Adres email</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="user_email" id="id_user_email"  value="{{ request.user.email }}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_user_first_name">Imię</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="user_first_name" id="id_user_first_name"  value="{{ request.user.first_name|default:'Nie podano' }}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_user_last_name">Nazwisko</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="user_last_name" id="id_user_last_name"  value="{{ request.user.last_name|default:'Nie podano' }}" disabled>
+                        </div>
+                    </div>
 
-    <div>
-        <h2>Email: </h2>
-        <span>{{ request.user.email }}</span>
+                    <div class="ln_solid"></div>
+                    <a href="{% url 'accounts:edit_user_data_view' %}" class="btn btn-success">Edytuj dane</a>
+                    <a href="{% url 'accounts:password_change' %}" class="btn btn-success" >Zmień hasło</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <h2>Imię: </h2>
-        <span>{{ request.user.first_name|default:'Nie podano' }}</span>
-    </div>
-
-    <div>
-        <h2>Nazwisko: </h2>
-        <span>{{ request.user.last_name|default:'Nie podano' }}</span>
-    </div>
-
-    <div>
-        <h2>Zarejestrowany od: </h2>
-        <span>{{ request.user.date_joined|date:'l d E Y' }}</span>
-    </div>
-
-    <div>
-        <h2>Ostatnio zalogowany: </h2>
-        <span>{{ request.user.last_login|date:'l d E Y G:i' }}</span>
-    </div>
-
-    <a href="{% url 'accounts:edit_user_data_view' %}">Edytuj dane</a>
-    <a href="{% url 'accounts:password_change' %}">Zmień hasło</a>
+</div>
 {% endblock %}
