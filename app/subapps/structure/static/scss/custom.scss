@@ -41,7 +41,7 @@
 
 .site_title i {
   border: 1px solid #EAEAEA;
-  padding: 5px 6px;
+  padding: 5px 10px;
   border-radius: 50%;
 }
 
@@ -141,15 +141,17 @@
 }
 
 .profile_info {
-  padding: 25px 10px 10px;
+  padding: 35px 10px 30px;
   width: 65%;
   float: left;
   span {
     font-size: 13px;
     line-height: 30px;
     color: #BAB8B8;
+    display: inline-block;
   }
   h2 {
+    display: inline-block;
     font-size: 14px;
     color: #ECF0F1;
     margin: 0;
