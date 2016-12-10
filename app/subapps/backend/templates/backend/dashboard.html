@@ -3,5 +3,72 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h3>Dashboard Panelu Administratora :)</h3>
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Panel administartora <small>Mój licznik</small></h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Uzytkownicy <small><a href="{% url 'backend:users_list_view' %}">Zobacz</a></small></h4>
+                </div>
+                <div class="row">
+                    <h2>Wszyscy: {{ users_count }}</h2>
+                    <h2>W zespole administratorów: {{ users_staff_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Wiadomości <small><a href="{% url 'backend:backend_problems_view' %}">Zobacz</a></small></h4>
+                </div>
+                <div class="row">
+                    <h2>Wszystkich: {{ messges_count }}</h2>
+                    <h2>Wątków: {{ problems_count }}</h2>
+                    <h2>W tym zakończonych: {{ solved_problems_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Aktualności <small><a href="{% url 'backend:backend_notices_list_view' %}">Zobacz</a></small></h4>
+                </div>
+                <div class="row">
+                    <h2>Wszystkich: {{ notices_count }}</h2>
+                    <h2>Informacji o wyłączeniach: {{ breakdowns_count }}</h2>
+                    <h2>Powiązanych informacji o wyłączeniach z aktualnościami: {{ notices_breakdowns_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Liczniki <small><a href="">Zobacz</a></small></h4>
+                </div>
+                <div class="row">
+                    <h2>Wszystkich: {{ meters_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h4>Punkty poboru energii <small><a href="">Zobacz</a></small></h4>
+                </div>
+                <div class="row">
+                    <h2>Wszystkich: {{ meter_points_count }}</h2>
+                    <h2>Powiązanych z licznikami: {{ meter_pints_users_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
