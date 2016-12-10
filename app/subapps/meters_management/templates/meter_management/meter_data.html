@@ -1,32 +1,42 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Profil użytkownika{% endblock %}
+{% block title %}Licznik{% endblock %}
 
 {% block content %}
-    <div>
-        <h2>Nazwa modelu: </h2>
-        <span>{{ meter.model_name }}</span>
+<div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Moje licznik {{ meter.id }}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Numer seryjny</th>
+                    <th>Model</th>
+                    <th>Aktywny</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row"><a href="{%  url 'meter_management:meter_data_view' meter.id %}">{{ meter.id }}</a></th>
+                    <td>{{ meter.serial_number }}</td>
+                    <td>{{ meter.model_name }}</td>
+                    <td>{{ meter.is_active|yesno:'Tak,Nie' }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Data wykrycia przez system: <b>{{ meter.detection_report_date|date:'l d E Y G:i' }}</b></p>
+            <p>Połączony ze stacją: <b>{{ meter.station.address }}</b></p>
+            <a href="{% url 'meter_management:remove_meter' meter.id %}" class="btn btn-warning">Usuń</a>
+            <p><a href="{% url 'meter_management:meters_list_view' %}" class="">Wróć do listy</a></p>
+        </div>
     </div>
-
-    <div>
-        <h2>Numer seryjny: </h2>
-        <span>{{ meter.serial_number }}</span>
-    </div>
-
-    <div>
-        <h2>Aktywny: </h2>
-        <span>{{ meter.is_active|yesno:'Tak,Nie' }}</span>
-    </div>
-
-    <div>
-        <h2>Data wykrycia przez system: </h2>
-        <span>{{ meter.detection_report_date|date:'l d E Y G:i' }}</span>
-    </div>
-
-    <div>
-        <h2>Połączony ze stacją: </h2>
-        <span>{{ meter.station.address }}</span>
-    </div>
-
-    <a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a>
+</div>
 {% endblock %}

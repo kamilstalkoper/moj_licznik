@@ -3,19 +3,42 @@
 {% block title %}Moje liczniki{% endblock %}
 
 {% block content %}
-    <a href="{% url 'meter_management:add_meter' %}">Dodaj nowy</a>
-    <ul>
-        {% for meter in meters %}
-            <li>
-                <a href="{%  url 'meter_management:meter_data_view' meter.id %}">
-                    Numer seryjny: {{ meter.serial_number }}
-                    <a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a>
-                </a>
-            </li>
-        {% empty %}
-            <li>Nie masz żadnych dodanych liczników.</li>
-        {% endfor %}
-    </ul>
-
-    {% include 'structure/pagination.html' %}
+<div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Moje liczniki</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Numer seryjny</th>
+                    <th>Model</th>
+                    <th>Usuń</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for meter in meters %}
+                <tr>
+                    <th scope="row"><a href="{%  url 'meter_management:meter_data_view' meter.id %}">{{ meter.id }}</a></th>
+                    <td>{{ meter.serial_number }}</td>
+                    <td>{{ meter.model_name }}</td>
+                    <td><a href="{% url 'meter_management:remove_meter' meter.id %}">Usuń</a></td>
+                </tr>
+                {% empty %}
+                    <tr>Nie masz żadnych dodanych liczników.</tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'meter_management:add_meter' %}">Dodaj nowy</a>
+        </div>
+    </div>
+</div>
+{% include 'structure/pagination.html' %}
 {% endblock %}
