@@ -3,30 +3,43 @@
 {% block title %}{{ notice.title }}{% endblock %}
 
 {% block content %}
-    <a href="{% url 'news:notices_list_view' %}">&laquo; Powrót do listy aktualności</a>
-    <div>
-        <h1>{{ notice.title }}</h1>
-        <span>{{ notice.created_at }}</span>
-
-        <div>
+<div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>{{ notice.title }} <small>{{ notice.created_at }}</small></h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <p>
             {{ notice.content_html|safe }}
+            </p>
+            {% if notice.breakdowns.exists %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Od</th>
+                        <th class="text-center">Do</th>
+                        <th class="text-center">Stacja</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for breakdown in notice.breakdowns.all %}
+                        {% for station in breakdown.stations.all %}
+                        <tr>
+                            <th scope="row">{{ breakdown.start_at }}</th>
+                            <th scope="row">{{ breakdown.end_at }}</th>
+                            <th scope="row">{{ station.address }}</th>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <a href="{% url 'news:notices_list_view' %}">&laquo; Powrót do listy aktualności</a>
         </div>
     </div>
-
-    {% if notice.breakdowns.exists %}
-        <div>
-            <h3>Lista stacji podlegających wyłączeniu:</h3>
-            <ul>
-                {% for breakdown in notice.breakdowns.all %}
-                    <li>
-                        <p>Od: {{ breakdown.start_at }}</p>
-                        <p>Do: {{ breakdown.end_at }}</p>
-                        {% for station in breakdown.stations.all %}
-                            <p>{{ station.address }}</p>
-                        {% endfor %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+</div>
 {% endblock %}

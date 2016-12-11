@@ -3,40 +3,60 @@
 {% block title %}Lista aktualności{% endblock %}
 
 {% block content %}
-    <div class="mid_center">
-        <form action="{% url 'news:search_notices_view' %}" method="get">
-            <div class="col-xs-12 form-group pull-right top_search">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+
+<div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Aktualność</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content" style="display: block;">
+            <form action="{% url 'news:search_notices_view' %}" method="get">
+                <div class="col-xs-12 form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                     </span>
+                    </div>
                 </div>
+            </form>
+            <div class="dashboard-widget-content">
+                {% if notices %}
+                    {% if is_searched %}
+                        <p>Aktualności spełniające kryterium {{ search_phrase }}:</p>
+                    {% endif %}
+                    <ul class="list-unstyled timeline widget">
+                        {% for notice in notices %}
+                        <li>
+                            <div class="block">
+                                <div class="block_content">
+                                    <h2 class="title">
+                                        <a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
+                                    </h2>
+                                    <div class="byline">
+                                        <span>{{ notice.created_at }}</span>
+                                    </div>
+                                    <p class="excerpt">{{ notice.summary }}</p>
+                                    <p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {% if is_searched %}
+                        <p>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</p>
+                    {% else %}
+                        <p>Brak aktualności.</p>
+                    {% endif %}
+                {% endif %}
             </div>
-        </form>
+        </div>
     </div>
-    {% if notices %}
-        {% if is_searched %}
-            <span>Aktualności spełniające kryterium {{ search_phrase }}:</span>
-        {% endif %}
-        <ul>
-            {% for notice in notices %}
-                <li>
-                    <a href="{% url 'news:notice_view' notice.id %}">
-                        <p>{{ notice.title }}</p>
-                        <p>{{ notice.created_at }}</p>
-                        <p>{{ notice.summary }}</p>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        {% if is_searched %}
-            <span>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</span>
-        {% else %}
-            <span>Brak aktualności.</span>
-        {% endif %}
-    {% endif %}
-
-    {% include 'structure/pagination.html' %}
+</div>
+{% include 'structure/pagination.html' %}
 {% endblock %}
