@@ -3,24 +3,39 @@
 {% block title %}Szczegóły wyłączenia{% endblock %}
 
 {% block content %}
-    <a href="{% url 'news:breakdowns_list_view' %}">&laquo; Powrót do listy wyłączeń</a>
-    <div>
-        <h3>Od: {{ breakdown.start_at|date:'l d E Y H:i' }}</h3>
-        <h3>Do: {{ breakdown.end_at|date:'l d E Y H:i' }}</h3>
-        {% if breakdown.reason %}
-            <div>
+<div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Aktualne wyłączenia</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <p>Od: <b>{{ breakdown.start_at|date:'l d E Y H:i' }}</b> do: <b>{{ breakdown.end_at|date:'l d E Y H:i' }}</b></p>
+            {% if breakdown.reason %}
+            <p>
                 <h4>Powód:</h4>
-                <p>{{ breakdown.reason }}</p>
-            </div>
-        {% endif %}
+                {{ breakdown.reason }}
+            </p>
+            {% endif %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">Lista stacji</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for station in breakdown.stations.all %}
+                <tr>
+                    <th scope="row">{{ station.address }}</th>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'news:breakdowns_list_view' %}">&laquo; Powrót do listy wyłączeń</a>
+        </div>
     </div>
-
-    <div>
-        <h3>Lista stacji podlegających wyłączeniu:</h3>
-        <ul>
-            {% for station in breakdown.stations.all %}
-                <li>{{ station.address }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+</div>
 {% endblock %}
