@@ -7,7 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from app.subapps.accounts.forms import RegistrationFirstStepForm
-from app.subapps.structure.models import UserMeterPoint, MeterPoint
+from app.subapps.structure.models import UserMeterPoint, MeterPoint, Meter
 
 
 class AddMeterForm(RegistrationFirstStepForm):
@@ -112,3 +112,29 @@ class ChangeMeterUsersForm(forms.Form):
             UserMeterPoint.objects.get_or_create(
                 meter_point=meter_point, user=user,
             )
+
+
+class ChangeMeterAliasForm(forms.Form):
+    meter_id = forms.IntegerField()
+    alias = forms.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(ChangeMeterAliasForm, self).__init__(*args, **kwargs)
+
+    def clean_meter_id(self):
+        meter_id = self.cleaned_data.get('meter_id')
+        if not Meter.objects \
+                .filter(meterpointstate__meter_point__users=self.user,
+                        id=meter_id) \
+                .exists():
+            self.add_error('meter_id', u'Ten licznik nie należy do Ciebie.')
+
+        return meter_id
+
+    def save(self):
+        UserMeterPoint.objects \
+            .filter(
+                meter_point__meterpointstate__meter_id=
+                self.cleaned_data.get('meter_id'), user_id=self.user.id) \
+            .update(alias=self.cleaned_data.get('alias'))

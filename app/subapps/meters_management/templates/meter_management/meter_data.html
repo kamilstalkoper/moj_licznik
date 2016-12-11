@@ -20,6 +20,7 @@
                     <th>ID</th>
                     <th>Numer seryjny</th>
                     <th>Model</th>
+                    <th>Alias</th>
                     <th>Aktywny</th>
                 </tr>
                 </thead>
@@ -28,6 +29,7 @@
                     <th scope="row"><a href="{%  url 'meter_management:meter_data_view' meter.id %}">{{ meter.id }}</a></th>
                     <td>{{ meter.serial_number }}</td>
                     <td>{{ meter.model_name }}</td>
+                    <td>{{ meter.alias }}</td>
                     <td>{{ meter.is_active|yesno:'Tak,Nie' }}</td>
                 </tr>
                 </tbody>
@@ -35,6 +37,7 @@
             <p>Data wykrycia przez system: <b>{{ meter.detection_report_date|date:'l d E Y G:i' }}</b></p>
             <p>Połączony ze stacją: <b>{{ meter.station.address }}</b></p>
             <a href="{% url 'meter_management:remove_meter' meter.id %}" class="btn btn-warning">Usuń</a>
+            <a href="{% url 'meter_management:change_meter_alias_view' meter.id %}" class="btn btn-dark">Zmień alias</a>
             <p><a href="{% url 'meter_management:meters_list_view' %}" class="">Wróć do listy</a></p>
         </div>
     </div>
