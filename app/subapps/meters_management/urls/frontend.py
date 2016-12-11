@@ -16,4 +16,6 @@ urlpatterns = [
         name='meter_data_view'),
     url(r'^ustaw_jako_glowny$', SetMeterAsMainView.as_view(),
         name='set_as_main_view'),
+    url(r'^zmien_alias/(?P<meter_id>[\d]+)$', ChangeMeterAliasView.as_view(),
+        name='change_meter_alias_view'),
 ]

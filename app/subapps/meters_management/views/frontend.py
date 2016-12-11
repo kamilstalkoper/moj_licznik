@@ -10,7 +10,7 @@ from django.views.generic import DetailView, DeleteView, FormView, ListView
 
 from app.subapps.structure.models import Meter, MeterPoint, UserMeterPoint
 
-from ..forms import AddMeterForm, ChangeMainMeterForm
+from ..forms import AddMeterForm, ChangeMainMeterForm, ChangeMeterAliasForm
 
 
 @method_decorator(login_required, name='dispatch')
@@ -25,6 +25,20 @@ class MetersListView(ListView):
     def get_queryset(self):
         return Meter.objects \
             .filter(meterpointstate__meter_point__users=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(MetersListView, self).get_context_data(**kwargs)
+        aliases_dict = dict(UserMeterPoint.objects \
+            .filter(
+                meter_point__meterpointstate__meter_id__in=
+                [obj.id for obj in context['object_list']]) \
+            .values_list('meter_point__meterpointstate__meter_id', 'alias'))
+
+        for obj in context['object_list']:
+            alias = aliases_dict.get(obj.id, '------')
+            obj.alias = alias if alias is not None else '------'
+
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -100,6 +114,17 @@ class MeterDataView(DetailView):
         return Meter.objects.filter(
             meterpointstate__meter_point__users=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super(MeterDataView, self).get_context_data(**kwargs)
+        user_meter_point = UserMeterPoint.objects \
+            .filter(
+                meter_point__meterpointstate__meter_id=self.object.id,
+                user_id=self.request.user.id) \
+            .last()
+        context['meter'].alias = user_meter_point.alias if \
+            user_meter_point.alias else '------'
+        return context
+
 
 @method_decorator(login_required, name='dispatch')
 class SetMeterAsMainView(FormView):
@@ -125,3 +150,45 @@ class SetMeterAsMainView(FormView):
 
     def form_invalid(self, form):
         return redirect(self.redirect_to)
+
+
+@method_decorator(login_required, name='dispatch')
+class ChangeMeterAliasView(FormView):
+    http_method_names = [u'get', u'post']
+    form_class = ChangeMeterAliasForm
+    template_name = 'meter_management/change_meter_alias.html'
+    meter = None
+
+    def get(self, request, *args, **kwargs):
+        self.meter = get_object_or_404(
+            Meter, meterpointstate__meter_point__users=self.request.user,
+            id=kwargs.get('meter_id'))
+        return super(ChangeMeterAliasView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.meter = get_object_or_404(
+            Meter, meterpointstate__meter_point__users=self.request.user,
+            id=kwargs.get('meter_id'))
+        return super(ChangeMeterAliasView, self).post(request, *args, **kwargs)
+
+    def get_initial(self):
+        user_meter_point = UserMeterPoint.objects.filter(
+                meter_point__meterpointstate__meter_id=self.meter.id,
+                user_id=self.request.user.id).last()
+        return {
+            'alias': user_meter_point.alias if user_meter_point else ''
+        }
+
+    def get_form_kwargs(self):
+        kwargs = super(ChangeMeterAliasView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangeMeterAliasView, self).get_context_data(**kwargs)
+        context['meter'] = self.meter
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('meter_management:meters_list_view')
