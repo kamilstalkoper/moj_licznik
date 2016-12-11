@@ -3,29 +3,56 @@
 {% block title %}Nowy wątek{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_message_content">Wiadomość:</label>
-            <textarea name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
-            {% with form.message_content.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Napisz do nas</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
 
-        <div>
-            <label for="id_electrician_needed">Potrzebuję elektryka: </label>
-            <input type="checkbox" name="electrician_needed" id="id_electrician_needed" {% if form.electrician_needed.value %}checked{% endif %}>
+            </ul>
+            <div class="clearfix"></div>
         </div>
-        <div>
-            <label for="id_send_copy_to_me">Wyślij kopię wiadomości również do mnie: </label>
-            <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" {% if form.id_send_copy_to_me.value %}checked{% endif %}>
+        <div class="x_content">
+            <br />
+            <form method="post" class="form-horizontal form-label-left">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_message_content">Treść wiadomość
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <textarea  class="form-control" name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
+                        {% with form.message_content.errors as errors %}
+                        <ul>
+                            {% for error in errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_electrician_needed">Potrzebuje elektryka
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input class="form-control " type="checkbox" name="electrician_needed" id="id_electrician_needed" {% if form.electrician_needed.value %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_send_copy_to_me" class="control-label col-md-3 col-sm-3 col-xs-12">Wyślij kopię do mnie</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input class="form-control " type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" {% if form.id_send_copy_to_me.value %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <button type="submit" class="btn btn-success">Wyślij</button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <button type="submit">Wyślij</button>
-    </form>
+    </div>
+</div>
 {% endblock %}
