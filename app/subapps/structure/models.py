@@ -212,3 +212,6 @@ class Alarm(models.Model):
 
     def __unicode__(self):
         return u'{} ({})'.format(self.user.username, self.limit)
+
+    def get_period_type_description(self):
+        return PERIOD_TYPES.get_description_by_number(self.period_type)

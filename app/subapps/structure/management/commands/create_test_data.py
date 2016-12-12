@@ -17,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '-d',
             dest='days',
-            default=0,
+            default=1,
             type=int,
             help=u'Dni liczba dni wstecz od dzisiaj, dla których mają być '
                  u'wygenerowane losowe dane.',
@@ -34,9 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         end_date = timezone.now()
-        end_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
         start_date = end_date - timedelta(days=options.get('days'))
-        end_date += timedelta(days=1)
 
         self.stdout.write(u'Dodaję dane od {} do {}'.format(
             start_date.strftime('%d-%m-%Y %H:%M'),
