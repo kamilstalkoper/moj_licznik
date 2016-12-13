@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from django.contrib import admin
 
 from .models import (
-    Station, Meter, MeterPoint, TariffZone, TariffDefinition, MeterPointState,
+    Station, Meter, MeterPoint, Tariff, TariffDefinition, MeterPointState,
     MeterObject, MeterData, Alarm, UserMeterPoint)
 
 
@@ -33,21 +33,21 @@ class MeterPointAdmin(admin.ModelAdmin):
 admin.site.register(MeterPoint, MeterPointAdmin)
 
 
-class TariffZoneAdmin(admin.ModelAdmin):
-    list_display = ('name', 'obis')
-    search_fields = ('name', 'obis')
-admin.site.register(TariffZone, TariffZoneAdmin)
+class TariffAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    search_fields = ('name', )
+admin.site.register(Tariff, TariffAdmin)
 
 
 class TariffDefinitionAdmin(admin.ModelAdmin):
-    list_display = ('tariff_zone', 'start_hour', 'end_hour')
-    search_fields = ('tariff_zone', )
+    list_display = ('tariff', 'start_hour', 'end_hour', 'tariff_type')
+    search_fields = ('tariff', )
 admin.site.register(TariffDefinition, TariffDefinitionAdmin)
 
 
 class MeterPointStateAdmin(admin.ModelAdmin):
     list_display = ('meter', 'meter_point', 'start_at', 'end_at', 'start_value',
-                    'current_power_limit', 'tariff_zone')
+                    'current_power_limit', 'tariff')
 admin.site.register(MeterPointState, MeterPointStateAdmin)
 
 

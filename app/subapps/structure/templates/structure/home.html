@@ -37,4 +37,36 @@
     </div>
 </div>
 <!--koniec biezace uzycie-->
+    <div>
+        <h3>Garść informacji o liczniku</h3>
+        <p>Ostatni miesiąc: {{ last_month }}</p>
+        <p>Limit MOCY: {{ current_limit }}</p>
+        <p>Wartość ostatniego pomiaru: {{ last_meter_data_value }}</p>
+        <p>Data ostatniego pomiaru: {{ last_meter_data_time|date:"l d E Y H:i" }}</p>
+    </div>
+
+    <div>
+        <h3>Twoja taryfa</h3>
+        <p>Nazwa: {{ tariff.name }}</p>
+        <div>
+            {% for description, hours_list in tariff_definition_dict.items %}
+                <p>{{ description }}</p>
+                {% for hours_dict in hours_list %}
+                    <p>Od: {{ hours_dict.start_hour|time:'H:i' }}</p>
+                    <p>Do: {{ hours_dict.end_hour|time:'H:i' }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+        <h3>Ustawione alarmy</h3>
+        {% for alarm in alarms %}
+            <p>Ustawiony dla licznika: {{ alarm.meter.serial_number }}</p>
+            <p>Limit: {{ alarm.limit }}</p>
+            <p>Okres: {{ alarm.period }} {{ alarm.get_period_type_description }}</p>
+        {% empty %}
+            <p>Brak ustawionych alarmów :(</p>
+        {% endfor %}
+    </div>
 {% endblock %}

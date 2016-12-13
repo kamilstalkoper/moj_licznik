@@ -6,7 +6,8 @@ from __future__ import absolute_import
 from django.contrib.auth.models import User
 from django.db import models
 
-from .enums.standard_enums import REASON_ENUMS, SCALER_UNIT_ENUMS
+from .enums.standard_enums import (
+    REASON_ENUMS, SCALER_UNIT_ENUMS, TARIFF_DEFINITION_TYPES)
 from .enums.period_enums import PERIOD_TYPES
 
 
@@ -91,30 +92,33 @@ class MeterPoint(models.Model):
         return u'{} - {}'.format(self.name, self.ppe_code)
 
 
-class TariffZone(models.Model):
-    name = models.CharField(max_length=255, verbose_name=u'Nazwa strefy')
-    obis = models.CharField(max_length=32)
+class Tariff(models.Model):
+    name = models.CharField(max_length=255, verbose_name=u'Nazwa taryfy')
 
     class Meta:
-        verbose_name = u'Strefa czasowa'
-        verbose_name_plural = u'Strefy czasowe'
+        verbose_name = u'Taryfa'
+        verbose_name_plural = u'Taryfy'
 
     def __unicode__(self):
-        return u'{} ({})'.format(self.name, self.obis)
+        return self.name
 
 
 class TariffDefinition(models.Model):
     start_hour = models.TimeField(verbose_name=u'Godzina startu')
     end_hour = models.TimeField(verbose_name=u'Godzina końca')
 
-    tariff_zone = models.ForeignKey(TariffZone, verbose_name=u'Strefa czasowa')
+    tariff = models.ForeignKey(Tariff, null=True, verbose_name=u'Taryfa')
+    tariff_type = models.SmallIntegerField(
+        choices=TARIFF_DEFINITION_TYPES.as_enum(),
+        default=TARIFF_DEFINITION_TYPES.one,
+        verbose_name=u'Strefa czasowa')
 
     class Meta:
         verbose_name = u'Definicja strefy czasowej'
         verbose_name_plural = u'Definicje stref czasowych'
 
     def __unicode__(self):
-        return u'{} - {} -> {}'.format(self.tariff_zone.name, self.start_hour,
+        return u'{} - {} -> {}'.format(self.tariff.name, self.start_hour,
                                        self.end_hour)
 
 
@@ -130,7 +134,7 @@ class MeterPointState(models.Model):
     start_value = models.IntegerField(
         default=0, verbose_name=u'Wartość początkowa')
 
-    tariff_zone = models.ForeignKey(TariffZone, verbose_name=u'Strefa czasowa')
+    tariff = models.ForeignKey(Tariff, null=True, verbose_name=u'Taryfa')
 
     class Meta:
         verbose_name = u'Stan punktu pomiaru'
@@ -151,7 +155,9 @@ class MeterObject(models.Model):
         verbose_name=u'Czy wartość w stosunku do poprzednego pomiaru wzrosła?')
     precision = models.SmallIntegerField(verbose_name=u'Precyzja')
 
-    unit = models.SmallIntegerField(verbose_name=u'Jednostka')
+    unit = models.SmallIntegerField(
+        choices=SCALER_UNIT_ENUMS.as_enum(), default=SCALER_UNIT_ENUMS.KWh,
+        verbose_name=u'Jednostka')
 
     class Meta:
         verbose_name = u'Obiekt pomiaru'
@@ -170,7 +176,8 @@ class MeterData(models.Model):
     cap_time = models.IntegerField(
         default=15, verbose_name=u'Częstotliwość pomiaru (minuty)')
 
-    flags = models.CharField(max_length=32, verbose_name=u'Flagi')
+    flags = models.CharField(max_length=32, null=True, blank=True,
+                             verbose_name=u'Flagi')
     reason = models.SmallIntegerField(
         default=REASON_ENUMS.auto, choices=REASON_ENUMS.as_enum(),
         verbose_name=u'Typ pomiaru')
@@ -205,3 +212,6 @@ class Alarm(models.Model):
 
     def __unicode__(self):
         return u'{} ({})'.format(self.user.username, self.limit)
+
+    def get_period_type_description(self):
+        return PERIOD_TYPES.get_description_by_number(self.period_type)
