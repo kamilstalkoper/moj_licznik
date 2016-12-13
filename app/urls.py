@@ -33,6 +33,10 @@ urlpatterns = [
     url(r'^aktualnosci/', include('app.subapps.news.urls.frontend',
                                   namespace='news')),
 
+    # statistics
+    url(r'^zuzycie/?', include('app.subapps.statistics.urls',
+                               namespace='statistics')),
+
     # structure
     url(r'^', include('app.subapps.structure.urls')),
 
