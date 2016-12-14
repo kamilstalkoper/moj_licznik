@@ -3,7 +3,8 @@
 
 from __future__ import absolute_import
 
-from datetime import timedelta
+from dateutil.relativedelta import relativedelta
+from dateutil.rrule import rrule, MONTHLY, HOURLY, DAILY, YEARLY
 
 from django.db.models import Max
 
@@ -12,25 +13,35 @@ from app.subapps.structure.models import Meter, MeterData
 
 class MeterDataStatistics(object):
     def __init__(self, start_date, end_date, main_meter_point):
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_date = start_date + relativedelta(seconds=1)
+        self.end_date = end_date + relativedelta(days=1, seconds=-1)
         self.main_meter_point = main_meter_point
 
-        self.precision, period_before, self.date_string = self.get_precision()
-        self.before_start_period = start_date - period_before
+        self.get_precision()
 
     def get_precision(self):
         days_between = (self.end_date - self.start_date).days
-        if days_between <= 2:
-            return 'hour', timedelta(hours=1), '%Y-%m-%d %H'
+        if days_between <= 1:
+            self.before_start_period = self.start_date + relativedelta(hours=-1)
+            self.precision = 'hour'
+            self.date_string = '%Y-%m-%d %H'
+            return
 
         if days_between <= 60:
-            return 'day', timedelta(days=1), '%Y-%m-%d'
+            self.before_start_period = self.start_date + relativedelta(days=-1)
+            self.precision = 'day'
+            self.date_string = '%Y-%m-%d'
+            return
 
         if days_between <= 400:
-            return 'month', timedelta(days=32), '%Y-%m'
+            self.before_start_period = self.start_date + relativedelta(months=-1)
+            self.precision = 'month'
+            self.date_string = '%Y-%m'
+            return
 
-        return 'year', timedelta(days=366), '%Y'
+        self.before_start_period = self.start_date + relativedelta(years=-1)
+        self.precision = 'year'
+        self.date_string = '%Y'
 
     def get_meter_date(self):
         if self.main_meter_point is None:
@@ -43,6 +54,7 @@ class MeterDataStatistics(object):
         meter_data = {
             obj[self.precision]: obj['value__max'] for obj in meter_data
         }
+        return self.create_data_array(meter_data)
 
     def get_extra_select_dict(self):
         extra_select_dict = {}
@@ -72,16 +84,29 @@ class MeterDataStatistics(object):
 
     def create_data_array(self, meter_data):
         meter_data_list = []
-        #TODO: add relativedate
         last_value = meter_data.pop(
             self.before_start_period.strftime(self.date_string), 0)
-        for i in range((self.end_date - self.start_date).days):
-            day = self.start_date + timedelta(days=i)
-            day_value = meter_data.get(day.strftime('%Y-%m-%d'), 0)
-            if day_value:
-                meter_data_list.append(day_value - last_value)
-                last_value = day_value
+        for date in self.create_loop_range():
+            date_value = meter_data.get(date.strftime(self.date_string), 0)
+            if date_value:
+                meter_data_list.append(date_value - last_value)
+                last_value = date_value
             else:
                 meter_data_list.append(0)
 
         return meter_data_list
+
+    def create_loop_range(self):
+        if self.precision == 'hour':
+            rule = HOURLY
+        elif self.precision == 'day':
+            rule = DAILY
+        elif self.precision == 'month':
+            rule = MONTHLY
+        else:
+            rule = YEARLY
+
+        return (
+                dt for dt in
+                rrule(rule, dtstart=self.start_date, until=self.end_date)
+            )
