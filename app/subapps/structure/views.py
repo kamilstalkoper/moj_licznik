@@ -26,11 +26,13 @@ class HomeView(TemplateView):
             .first()
 
         if user_main_meter_point is None:
-            last_month_data = []
-        else:
-            meter_data_object = MeterDataStatistics(
-                first_month_day, today, user_main_meter_point.meter_point)
-            last_month_data = meter_data_object.get_meter_date()
+            return {
+                'error': u'Proszę ustawić licznik główny.'
+            }
+
+        meter_data_object = MeterDataStatistics(
+            first_month_day, today, user_main_meter_point.meter_point)
+        last_month_data = meter_data_object.get_meter_date()
 
         last_meter_point_state = MeterPointState.objects \
             .filter(meter_point_id=user_main_meter_point.meter_point.id) \
