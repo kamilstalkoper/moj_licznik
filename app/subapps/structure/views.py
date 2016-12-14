@@ -10,8 +10,9 @@ from django.utils.timezone import now
 
 from .enums.standard_enums import TARIFF_DEFINITION_TYPES
 from .models import (
-    Alarm, Meter, UserMeterPoint, MeterPointState, MeterData, TariffDefinition)
-from .helpers import generate_meter_data_dict
+    Alarm, UserMeterPoint, MeterPointState, MeterData, TariffDefinition)
+
+from app.subapps.statistics.helpers import MeterDataStatistics
 
 
 class HomeView(TemplateView):
@@ -19,38 +20,19 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         today = now()
-        day_before_first_month_day = today - timedelta(days=today.day)
+        first_month_day = today - timedelta(days=today.day)
         user_main_meter_point = UserMeterPoint.objects \
             .filter(user_id=self.request.user.id, is_main_meter_point=True) \
             .first()
 
-        if user_main_meter_point is not None:
-            meters = Meter.objects.filter(
-                meterpointstate__meter_point_id=
-                user_main_meter_point.meter_point.id)
-        else:
-            meters = Meter.objects.filter(
-                meterpointstate__meter_point__users=self.request.user)
+        if user_main_meter_point is None:
+            return {
+                'error': u'Proszę ustawić licznik główny.'
+            }
 
-        meter_data = generate_meter_data_dict(
-            [meter.id for meter in meters], day_before_first_month_day, today,
-            'day')
-        meter_data = {
-            obj['day']: obj['value__max'] for obj in meter_data
-        }
-
-        last_month_data = []
-        last_value = meter_data.pop(
-            day_before_first_month_day.strftime('%Y-%m-%d'), 0)
-        first_month_day = day_before_first_month_day + timedelta(days=1)
-        for i in range(today.day):
-            day = first_month_day + timedelta(days=i)
-            day_value = meter_data.get(day.strftime('%Y-%m-%d'), 0)
-            if day_value:
-                last_month_data.append(day_value - last_value)
-                last_value = day_value
-            else:
-                last_month_data.append(0)
+        meter_data_object = MeterDataStatistics(
+            first_month_day, today, user_main_meter_point.meter_point)
+        last_month_data = meter_data_object.get_meter_date()
 
         last_meter_point_state = MeterPointState.objects \
             .filter(meter_point_id=user_main_meter_point.meter_point.id) \
