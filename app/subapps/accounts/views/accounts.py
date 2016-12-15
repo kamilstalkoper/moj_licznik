@@ -4,11 +4,11 @@
 from __future__ import absolute_import
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, Http404, redirect
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import FormView, TemplateView
 
-from app.subapps.structure.models import MeterPoint, Meter
+from app.subapps.structure.models import Meter
 
 from ..forms import EditUserDataForm
 

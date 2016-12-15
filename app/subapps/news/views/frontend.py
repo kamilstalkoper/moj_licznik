@@ -3,13 +3,16 @@
 
 from __future__ import absolute_import
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.views.generic import ListView, DetailView
 
 from ..models import Notice, Breakdown
 
 
+@method_decorator(login_required, name='dispatch')
 class NoticesListView(ListView):
     context_object_name = 'notices'
     http_method_names = [u'get', ]
@@ -24,6 +27,7 @@ class NoticesListView(ListView):
             .order_by('-created_at')
 
 
+@method_decorator(login_required, name='dispatch')
 class SearchNoticesView(NoticesListView):
     search_phrase = None
 
@@ -52,6 +56,7 @@ class SearchNoticesView(NoticesListView):
             Q(content_body__icontains=self.search_phrase))
 
 
+@method_decorator(login_required, name='dispatch')
 class NoticeView(DetailView):
     context_object_name = 'notice'
     http_method_names = [u'get', ]
@@ -65,6 +70,7 @@ class NoticeView(DetailView):
             .prefetch_related('breakdowns', 'breakdowns__stations')
 
 
+@method_decorator(login_required, name='dispatch')
 class BreakdownsListView(ListView):
     context_object_name = 'breakdowns'
     http_method_names = [u'get', ]
@@ -79,6 +85,7 @@ class BreakdownsListView(ListView):
             .order_by('-start_at')
 
 
+@method_decorator(login_required, name='dispatch')
 class BreakdownView(DetailView):
     context_object_name = 'breakdown'
     http_method_names = [u'get', ]

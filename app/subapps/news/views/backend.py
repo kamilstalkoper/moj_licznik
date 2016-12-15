@@ -3,8 +3,10 @@
 
 from __future__ import absolute_import
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.views.generic import ListView, FormView, UpdateView
 
@@ -13,6 +15,8 @@ from ..forms import CreateNoticeForm, CreateBreakdownForm
 from ..models import Notice, Breakdown
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class BackendNoticesListView(ListView):
     context_object_name = 'notices'
     http_method_names = [u'get', ]
@@ -48,6 +52,8 @@ class BackendNoticesListView(ListView):
             Q(content_body__icontains=self.search_phrase))
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class CreateNoticeView(FormView):
     form_class = CreateNoticeForm
     http_method_names = [u'post', u'get']
@@ -58,6 +64,8 @@ class CreateNoticeView(FormView):
         return redirect('backend:backend_notices_list_view')
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class EditNoticeView(UpdateView):
     form_class = CreateNoticeForm
     http_method_names = [u'post', u'get']
@@ -67,6 +75,8 @@ class EditNoticeView(UpdateView):
     success_url = '/backend/aktualnosci/lista_aktualnosci'
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class BackendNoticeView(NoticeView):
     template_name = 'backend/news/notice.html'
 
@@ -76,6 +86,8 @@ class BackendNoticeView(NoticeView):
             .prefetch_related('breakdowns', 'breakdowns__stations')
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class BackendBreakdownsListView(BreakdownsListView):
     http_method_names = [u'get', ]
     template_name = 'backend/news/breakdowns_list.html'
@@ -84,10 +96,14 @@ class BackendBreakdownsListView(BreakdownsListView):
         return Breakdown.objects.all().order_by('-start_at')
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class BackendBreakdownView(BreakdownView):
     template_name = 'backend/news/breakdown.html'
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class CreateBreakdownView(FormView):
     form_class = CreateBreakdownForm
     http_method_names = [u'post', u'get']
@@ -98,6 +114,8 @@ class CreateBreakdownView(FormView):
         return redirect('backend:backend_breakdowns_list_view')
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class EditBreakdownView(UpdateView):
     form_class = CreateBreakdownForm
     http_method_names = [u'post', u'get']
