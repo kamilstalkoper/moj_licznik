@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
-from django.views.generic import ListView, DetailView, View, FormView
+from django.views.generic import DetailView, FormView, ListView, View
 
 from ..forms import AddUserForm
 
@@ -29,6 +29,8 @@ class UsersListView(ListView):
         return User.objects.all().exclude(id=self.request.user.id)
 
 
+@method_decorator(staff_member_required(login_url='authentication:auth_login'),
+                  name='dispatch')
 class SearchUsersView(UsersListView):
     search_phrase = None
 

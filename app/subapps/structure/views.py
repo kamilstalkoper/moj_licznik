@@ -5,8 +5,10 @@ from __future__ import absolute_import
 
 from datetime import timedelta
 
+from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.utils.timezone import now
+from django.utils.decorators import method_decorator
 
 from .enums.standard_enums import TARIFF_DEFINITION_TYPES
 from .models import (
@@ -15,6 +17,7 @@ from .models import (
 from app.subapps.statistics.helpers import MeterDataStatistics
 
 
+@method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'structure/home.html'
 
@@ -43,11 +46,9 @@ class HomeView(TemplateView):
             .filter(meter_id=last_meter_point_state.meter.id) \
             .only('value', 'acq_time').last()
 
-        return {
+        context = {
             'last_month': last_month_data,
-            'current_limit': last_meter_point_state.current_power_limit or 0,
-            'last_meter_data_value': last_meter_data.value or 0,
-            'last_meter_data_time': last_meter_data.acq_time or None,
+            'current_limit': last_meter_point_state.current_power_limit,
 
             'tariff': last_meter_point_state.tariff,
             'tariff_definition_dict': self.get_tariff_definition_dict(
@@ -55,6 +56,14 @@ class HomeView(TemplateView):
 
             'alarms': self.get_user_alarms(),
         }
+
+        if last_meter_data is not None:
+            context.update({
+                'last_meter_data_value': last_meter_data.value or 0,
+                'last_meter_data_time': last_meter_data.acq_time or None,
+            })
+
+        return context
 
     def get_user_alarms(self):
         return Alarm.objects \

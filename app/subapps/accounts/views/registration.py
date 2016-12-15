@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 from django.contrib.auth import login as auth_login, authenticate
-from django.shortcuts import get_object_or_404, Http404, redirect
+from django.shortcuts import Http404, redirect
 from django.views.generic import FormView
 
 from app.subapps.structure.models import MeterPointState
