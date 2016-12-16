@@ -39,5 +39,6 @@ class MainStatisticsView(FormView):
     def form_valid(self, form):
         context = self.get_context_data(**self.kwargs)
         if form.main_meter_point is not None:
-            context['meter_data'] = form.get_meter_data()
+            context = form.get_meter_data()
+            context['form'] = form
         return self.render_to_response(context)

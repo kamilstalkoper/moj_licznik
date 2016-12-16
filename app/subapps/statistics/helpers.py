@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, MONTHLY, HOURLY, DAILY, YEARLY
 
-from django.db.models import Max
+from django.db.models import Max, Min
 
 from app.subapps.structure.models import Meter, MeterData
 
@@ -110,3 +110,19 @@ class MeterDataStatistics(object):
                 dt for dt in
                 rrule(rule, dtstart=self.start_date, until=self.end_date)
             )
+
+    def get_other_avg(self):
+        aggregated_meter_data = MeterData.objects \
+            .filter(acq_time__range=[self.start_date, self.end_date]) \
+            .values('meter_id') \
+            .annotate(
+                maximum=Max('value'),
+                minimum=Min('value')
+            )[:100]
+
+        sum_values = 0
+        for agr_md in aggregated_meter_data:
+            sum_values += agr_md.get('maximum') - agr_md.get('minimum')
+
+        return sum_values / len(aggregated_meter_data) \
+            if aggregated_meter_data else 0

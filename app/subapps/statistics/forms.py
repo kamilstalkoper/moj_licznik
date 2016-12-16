@@ -7,6 +7,9 @@ from django import forms
 
 from .helpers import MeterDataStatistics
 
+from app.subapps.structure.helpers import get_tariff_data
+from app.subapps.structure.models import MeterPointState
+
 
 class ShowMeterDataForm(forms.Form):
     start_date = forms.DateField()
@@ -36,4 +39,14 @@ class ShowMeterDataForm(forms.Form):
 
         meter_data_object = MeterDataStatistics(
             start_date, end_date, self.main_meter_point)
-        return meter_data_object.get_meter_date()
+        meter_data_list = meter_data_object.get_meter_date()
+        return {
+            'meter_data': meter_data_list,
+            'user_meter_data_sum': sum(meter_data_list),
+            'others_avg': meter_data_object.get_other_avg(),
+            'tariff_data': get_tariff_data(),
+            'current_tariff': MeterPointState.objects \
+                .filter(meter_point_id=self.main_meter_point.id) \
+                .select_related('tariff') \
+                .last().tariff
+        }

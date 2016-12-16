@@ -3,39 +3,28 @@
 
 from __future__ import absolute_import
 
-from django.db.models import Max
+from .enums.standard_enums import TARIFF_DEFINITION_TYPES
+from .models import TariffDefinition
 
-from .models import MeterData
 
+def get_tariff_data():
+    tariff_definitions = TariffDefinition.objects.all().select_related('tariff')
+    tariff_dict = {}
+    for tariff_definition in tariff_definitions:
+        if tariff_definition.tariff.name not in tariff_dict.keys():
+            tariff_dict[tariff_definition.tariff.name] = {}
 
-def generate_meter_data_dict(meters_ids, start_date, end_date, data_precision):
-    extra_select_dict = {}
-    order = []
-    values = []
-    if data_precision == 'year':
-        extra_select_dict['year'] = 'strftime(\'%%Y\', acq_time)'
-        order.append('year')
-        values.append('year')
-    if data_precision == 'month':
-        extra_select_dict['month'] = 'strftime(\'%%Y-%%m\', acq_time)'
-        order.append('month')
-        values.append('month')
-    if data_precision == 'day':
-        extra_select_dict['day'] = 'strftime(\'%%Y-%%m-%%d\', acq_time)'
-        order.append('day')
-        values.append('day')
-    if data_precision == 'hour':
-        extra_select_dict['hour'] = 'strftime(\'%%Y-%%m-%%d %%H\', acq_time)'
-        order.append('hour')
-        values.append('hour')
+        tariff_type_description = TARIFF_DEFINITION_TYPES \
+            .get_description_by_number(tariff_definition.tariff_type)
+        if tariff_type_description not in \
+                tariff_dict[tariff_definition.tariff.name]:
+            tariff_dict[tariff_definition.tariff.name][
+                tariff_type_description] = []
 
-    data = MeterData.objects \
-        .filter(meter__in=meters_ids, acq_time__gte=start_date,
-                acq_time__lte=end_date) \
-        .extra(select=extra_select_dict) \
-        .values(*values) \
-        .order_by(*order) \
-        .annotate(Max('value'))
+            tariff_dict[tariff_definition.tariff.name][
+                tariff_type_description].append({
+                    'start_hour': tariff_definition.start_hour,
+                    'end_hour': tariff_definition.end_hour,
+                })
 
-    print data
-    return data
+    return tariff_dict

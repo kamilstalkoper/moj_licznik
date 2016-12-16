@@ -11,15 +11,19 @@
                 {% csrf_token %}
                 <div>
                     <label for="id_start_date">Od</label>
-                    <input id="id_start_date" name="start_date" type="date" value="{{ form.start_date.value|default:'' }}">
+                    <input id="id_start_date" name="start_date" type="date" value="{{ form.start_date.value }}">
                 </div>
                 <div>
                     <label for="id_end_date">Do</label>
-                    <input id="id_end_date" name="end_date" type="date" value="{{ form.end_date.value|default:'' }}">
+                    <input id="id_end_date" name="end_date" type="date" value="{{ form.end_date.value }}">
                 </div>
                 <button type="submit">Zmień</button>
             </form>
-            <p>{{ meter_data }}</p>
+            <p>Zużycie: {{ meter_data }}</p>
+            <p>Suma: {{ user_meter_data_sum }}</p>
+            <p>Średnia innych: {{ others_avg }}</p>
+			<p>Twoja taryfa: {{ current_tariff.name }}</p>
+            <p>Taryfy: {{ tariff_data }}</p>
         {% else %}
             <h1>Wybierz daty i kliknij "Pokaż" aby zobaczyć zużycie w wybranym przez siebie okresie</h1>
             <form method="post">
