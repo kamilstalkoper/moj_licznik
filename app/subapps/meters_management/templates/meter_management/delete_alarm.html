@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Usuń alarm{% endblock %}
+
+{% block content %}
+    <div>
+        Czy na pewno chcesz usunąć ten alarm?
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Tak, chcę</button>
+    </form>
+
+    <a href="{% url 'meter_management:alarm_details_view' alarm.id %}">Jednak nie...</a>
+{% endblock %}

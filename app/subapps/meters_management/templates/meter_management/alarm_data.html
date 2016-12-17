@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Alarm{% endblock %}
+
+{% block content %}
+<div class="col-md-6 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Alarm {{ alarm.id }}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Limit</th>
+                    <th>Okres</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">{{ alarm.id }}</th>
+                    <td>{{ alarm.limit }} kWh</td>
+                    <td>{{ alarm.period }} {{ alarm.get_period_type_description }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
+				<h3>Szczegóły licznika</h3>
+				<ul>
+					{% with alarm.meter as meter %}
+						<li>Numer seryjny: {{ meter.serial_number }}</li>
+						<li>Model: {{ meter.model_name }}</li>
+						<li>Aktywny: {{ meter.is_active|yesno:'Tak,Nie' }}</li>
+						<li>Data wykrycia przez system: {{ meter.detection_report_date|date:'l d E Y' }}</li>
+					{% endwith %}
+				</ul>
+			</div>
+            <a href="{% url 'meter_management:edit_alarm_view' alarm.id %}" class="btn btn-warning">Edytuj</a>
+            <a href="{% url 'meter_management:delete_alarm_view' alarm.id %}" class="btn btn-danger">Usuń</a>
+            <p><a href="{% url 'meter_management:alarms_list_view' %}">Wróć do listy</a></p>
+        </div>
+    </div>
+
+	<div class="x_panel">
+        <div class="x_title">
+            <h2>Alarm{{ meter.id }}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+			<h3>Wartość do porównania z limitem: {{ meter_value }}</h3>
+			<span>Pewnie jakiś wykresik ;)</span>
+		</div>
+	</div>
+</div>
+{% endblock %}

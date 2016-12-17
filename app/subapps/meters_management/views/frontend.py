@@ -4,13 +4,16 @@
 from __future__ import absolute_import
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max, Min
 from django.shortcuts import get_object_or_404, Http404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, DeleteView, FormView, ListView
 
-from app.subapps.structure.models import Meter, MeterPoint, UserMeterPoint
+from app.subapps.structure.models import (
+    Alarm, Meter, MeterPoint, MeterData, UserMeterPoint)
 
-from ..forms import AddMeterForm, ChangeMainMeterForm, ChangeMeterAliasForm
+from ..forms import (
+    AddAlarmForm, AddMeterForm, ChangeMainMeterForm, ChangeMeterAliasForm)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -192,3 +195,92 @@ class ChangeMeterAliasView(FormView):
     def form_valid(self, form):
         form.save()
         return redirect('meter_management:meters_list_view')
+
+
+@method_decorator(login_required, name='dispatch')
+class AlarmsListView(ListView):
+    context_object_name = 'alarms'
+    http_method_names = [u'get', ]
+    model = Alarm
+    page_kwarg = 'strona'
+    paginate_by = 10
+    template_name = 'meter_management/alarms_list.html'
+
+    def get_queryset(self):
+        return Alarm.objects \
+            .filter(user_id=self.request.user.id)\
+            .select_related('meter')
+
+
+@method_decorator(login_required, name='dispatch')
+class AlarmDetailsView(DetailView):
+    template_name = 'meter_management/alarm_data.html'
+    http_method_names = [u'get', ]
+    context_object_name = 'alarm'
+    model = Alarm
+    pk_url_kwarg = 'alarm_id'
+
+    def get_queryset(self):
+        return Alarm.objects.filter(user_id=self.request.user.id)
+
+    def get_context_data(self, **kwargs):
+        context = super(AlarmDetailsView, self).get_context_data()
+        start_date, end_date = \
+            self.object.get_period_class().get_period(self.object.period)
+        agg_values = MeterData.objects \
+            .filter(meter_id=self.object.meter.id,
+                    acq_time__range=[start_date, end_date]) \
+            .aggregate(maximum=Max('value'), minimum=Min('value'))
+        try:
+            context['meter_value'] = \
+                agg_values.get('maximum', 0) - agg_values.get('minimum', 0)
+        except TypeError:
+            context['meter_value'] = 0
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class AddAlarmView(FormView):
+    form_class = AddAlarmForm
+    http_method_names = [u'get', u'post']
+    template_name = 'meter_management/add_alarm.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AddAlarmView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        alarm = form.save()
+        return redirect('meter_management:alarm_details_view',
+                        alarm_id=alarm.id)
+
+
+@method_decorator(login_required, name='dispatch')
+class EditAlarmView(AddAlarmView):
+    alarm_id = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.alarm_id = kwargs.get('alarm_id')
+        return super(EditAlarmView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(EditAlarmView, self).get_form_kwargs()
+        instance = get_object_or_404(
+            Alarm, id=self.alarm_id, user_id=self.request.user.id)
+        kwargs.update({'instance': instance})
+        return kwargs
+
+
+class DeleteAlarmView(DeleteView):
+    context_object_name = 'alarm'
+    model = Alarm
+    pk_url_kwarg = 'alarm_id'
+    http_method_names = [u'get', u'post']
+    template_name = 'meter_management/delete_alarm.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return redirect('meter_management:alarms_list_view')

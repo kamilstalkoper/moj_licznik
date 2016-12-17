@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dodaj alarm{% endblock %}
+
+{% block content %}
+<div>
+	<form method="post">
+		{% csrf_token %}
+		<div>
+			<label for="id_meter">Licznik:</label>
+			<select id="id_meter" name="meter" required="">
+				{% for value, description in form.meter.field.choices %}
+					<option value="{{ value }}" {% if form.meter.value == value %}selected{% endif %}>{{ description }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div>
+			<label for="id_limit">Limit:</label>
+			<input id="id_limit" name="limit" type="number" value="{{ form.limit.value|default:'' }}" required>
+			<span>kWh</span>
+		</div>
+		<div>
+			<label for="id_period">Okres:</label>
+			<input id="id_period" name="period" type="number" value="{{ form.period.value|default:'' }}" required>
+		</div>
+		<div>
+			<label for="id_period_type">Typ okresu:</label>
+			<select id="id_period_type" name="period_type" required="">
+				{% for value, description in form.period_type.field.choices %}
+					<option value="{{ value }}" {% if form.period_type.value == value %}selected{% endif %}>{{ description }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<button type="submit">Zapisz</button>
+	</form>
+</div>
+{% endblock %}

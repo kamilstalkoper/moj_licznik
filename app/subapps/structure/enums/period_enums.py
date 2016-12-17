@@ -29,55 +29,52 @@ class PeriodEnum(EasyEnum):
                 return description
         raise AttributeError
 
-    def get_period_function(self, item):
-        if item in self.dct:
-            return self.dct[item][2]
+    def get_period_class(self, number):
+        for item in self.dct.values():
+            if item[0] == number:
+                return item[2]
         raise AttributeError
 
 
 class AlarmPeriodType(object):
-    def __init__(self):
-        super(AlarmPeriodType, self).__init__()
-        self.now = now()
-
     def get_period(self, period_value):
         return NotImplementedError
 
 
 class HoursAlarm(AlarmPeriodType):
     def get_period(self, period_value):
-        start_at = self.now - relativedelta(hours=-period_value)
-        end_at = self.now
+        start_at = now() + relativedelta(hours=-period_value)
+        end_at = now()
 
         return start_at, end_at
 
 
 class DaysAlarm(AlarmPeriodType):
     def get_period(self, period_value):
-        start_at = self.now.date() - relativedelta(days=-period_value)
-        end_at = self.now.date()
+        start_at = now() + relativedelta(days=-period_value)
+        end_at = now()
 
         return start_at, end_at
 
 
 class WeeksAlarm(AlarmPeriodType):
     def get_period(self, period_value):
-        start_at = self.now.date() - relativedelta(weeks=-period_value)
-        end_at = self.now.date()
+        start_at = now() + relativedelta(weeks=-period_value)
+        end_at = now()
 
         return start_at, end_at
 
 
 class MonthsAlarm(AlarmPeriodType):
     def get_period(self, period_value):
-        start_at = self.now.date() - relativedelta(months=-period_value)
-        end_at = self.now.date()
+        start_at = now() + relativedelta(months=-period_value)
+        end_at = now()
 
         return start_at, end_at
 
 PERIOD_TYPES = PeriodEnum({
-    'hours': (1, 'Godzin (-y)', HoursAlarm),
-    'days': (2, 'Doby / Dób', DaysAlarm),
-    'weeks': (3, 'Tygodnia (-dni)', WeeksAlarm),
-    'months': (4, 'Mieciąca (-cy)', MonthsAlarm),
+    'hours': (1, 'Godzin (-y)', HoursAlarm()),
+    'days': (2, 'Doby / Dób', DaysAlarm()),
+    'weeks': (3, 'Tygodnia (-dni)', WeeksAlarm()),
+    'months': (4, 'Mieciąca (-cy)', MonthsAlarm()),
 })
