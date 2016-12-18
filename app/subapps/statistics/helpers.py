@@ -12,12 +12,38 @@ from app.subapps.structure.models import Meter, MeterData
 
 
 class MeterDataStatistics(object):
-    def __init__(self, start_date, end_date, main_meter_point):
+    def __init__(self, start_date, end_date, main_meter_point, precision=None):
         self.start_date = start_date + relativedelta(seconds=1)
         self.end_date = end_date + relativedelta(days=1, seconds=-1)
         self.main_meter_point = main_meter_point
 
-        self.get_precision()
+        if precision is None:
+            self.get_precision()
+        else:
+            self.get_forced_precision(precision)
+
+    def get_forced_precision(self, precision):
+        if precision == 'hour':
+            self.before_start_period = self.start_date + relativedelta(hours=-1)
+            self.precision = 'hour'
+            self.date_string = '%Y-%m-%d %H'
+            return
+
+        if precision == 'day':
+            self.before_start_period = self.start_date + relativedelta(days=-1)
+            self.precision = 'day'
+            self.date_string = '%Y-%m-%d'
+            return
+
+        if precision == 'month':
+            self.before_start_period = self.start_date + relativedelta(months=-1)
+            self.precision = 'month'
+            self.date_string = '%Y-%m'
+            return
+
+        self.before_start_period = self.start_date + relativedelta(years=-1)
+        self.precision = 'year'
+        self.date_string = '%Y'
 
     def get_precision(self):
         days_between = (self.end_date - self.start_date).days
