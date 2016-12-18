@@ -32,45 +32,164 @@
 								<span id="gauge-text2" class="gauge-value pull-left">5000</span>
 								<span class="gauge-value pull-left">kWh</span>
 								<span class="gauge-value pull-right">kWh</span>
-								<span id="goal-text2" class="goal-value pull-right">5000</span>
+								<span id="goal-text2" class="goal-value pull-right">{{ current_limit }}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!--koniec biezace uzycie-->
-			<div>
-				<h3>Garść informacji o liczniku</h3>
-				<p>Ostatni miesiąc: {{ last_month }}</p>
-				<p>Limit MOCY: {{ current_limit }}</p>
-				<p>Wartość ostatniego pomiaru: {{ last_meter_data_value|default:'------' }}</p>
-				<p>Data ostatniego pomiaru: {{ last_meter_data_time|date:"l d E Y H:i"|default:'------' }}</p>
-			</div>
-
-			<div>
-				<h3>Twoja taryfa</h3>
-				<p>Nazwa: {{ tariff.name }}</p>
-				<div>
-					{% for description, hours_list in tariff_definition_dict.items %}
-						<p>{{ description }}</p>
-						{% for hours_dict in hours_list %}
-							<p>Od: {{ hours_dict.start_hour|time:'H:i' }}</p>
-							<p>Do: {{ hours_dict.end_hour|time:'H:i' }}</p>
-						{% endfor %}
+<div class="col-md-8 col-sm-8 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Aktualność</h2>
+			<ul class="nav navbar-right panel_toolbox">
+				<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content" style="display: block;">
+			<form action="{% url 'news:search_notices_view' %}" method="get">
+				<div class="col-xs-12 form-group pull-right top_search">
+					<div class="input-group">
+						<input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </span>
+					</div>
+				</div>
+			</form>
+			<div class="dashboard-widget-content">
+				{% if notices %}
+				{% if is_searched %}
+				<p>Aktualności spełniające kryterium {{ search_phrase }}:</p>
+				{% endif %}
+				<ul class="list-unstyled timeline widget">
+					{% for notice in notices %}
+					<li>
+						<div class="block">
+							<div class="block_content">
+								<h2 class="title">
+									<a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
+								</h2>
+								<div class="byline">
+									<span>{{ notice.created_at }}</span>
+								</div>
+								<p class="excerpt">{{ notice.summary }}</p>
+								<p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
+							</div>
+						</div>
+					</li>
 					{% endfor %}
+				</ul>
+				{% else %}
+				{% if is_searched %}
+				<p>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</p>
+				{% else %}
+				<p>Brak aktualności.</p>
+				{% endif %}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-6 col-sm-12 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Aktualne wyłączenia</h2>
+			<ul class="nav navbar-right panel_toolbox">
+				<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			{% if breakdowns %}
+			<table class="table table-hover">
+				<thead>
+				<tr>
+					<th>Od</th>
+					<th>Do</th>
+					<th>Stacja</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for breakdown in breakdowns %}
+				{% for station in breakdown.stations.all %}
+				<tr>
+					<th scope="row"><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.start_at|date:'l d E Y H:i' }}</a></th>
+					<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.end_at|date:'l d E Y H:i' }}</a></td>
+					<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ station.address }}</a></td>
+				</tr>
+				{% endfor %}
+				{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+			<span>Brak wyłączeń dla Twojego regionu.</span>
+			{% endif %}
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>Bieżace zużycie</h2>
+				<div class="filter">
+					<div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+						<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+						<span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					<div class="demo-container" style="height:280px">
+						<div id="placeholder33x" class="demo-placeholder"></div>
+					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+		<!--koniec biezace uzycie-->
+			<!--<div>-->
+				<!--<h3>Garść informacji o liczniku</h3>-->
+				<!--<p>Ostatni miesiąc: {{ last_month }}</p>-->
+				<!--<p>Limit MOCY: {{ current_limit }}</p>-->
+				<!--<p>Wartość ostatniego pomiaru: {{ last_meter_data_value|default:'&#45;&#45;&#45;&#45;&#45;&#45;' }}</p>-->
+				<!--<p>Data ostatniego pomiaru: {{ last_meter_data_time|date:"l d E Y H:i"|default:'&#45;&#45;&#45;&#45;&#45;&#45;' }}</p>-->
+			<!--</div>-->
 
-			<div>
-				<h3>Ustawione alarmy</h3>
-				{% for alarm in alarms %}
-					<p>Ustawiony dla licznika: {{ alarm.meter.serial_number }}</p>
-					<p>Limit: {{ alarm.limit }}</p>
-					<p>Okres: {{ alarm.period }} {{ alarm.get_period_type_description }}</p>
-				{% empty %}
-					<p>Brak ustawionych alarmów :(</p>
-				{% endfor %}
-			</div>
+			<!--<div>-->
+				<!--<h3>Twoja taryfa</h3>-->
+				<!--<p>Nazwa: {{ tariff.name }}</p>-->
+				<!--<div>-->
+					<!--{% for description, hours_list in tariff_definition_dict.items %}-->
+						<!--<p>{{ description }}</p>-->
+						<!--{% for hours_dict in hours_list %}-->
+							<!--<p>Od: {{ hours_dict.start_hour|time:'H:i' }}</p>-->
+							<!--<p>Do: {{ hours_dict.end_hour|time:'H:i' }}</p>-->
+						<!--{% endfor %}-->
+					<!--{% endfor %}-->
+				<!--</div>-->
+			<!--</div>-->
+
+			<!--<div>-->
+				<!--<h3>Ustawione alarmy</h3>-->
+				<!--{% for alarm in alarms %}-->
+					<!--<p>Ustawiony dla licznika: {{ alarm.meter.serial_number }}</p>-->
+					<!--<p>Limit: {{ alarm.limit }}</p>-->
+					<!--<p>Okres: {{ alarm.period }} {{ alarm.get_period_type_description }}</p>-->
+				<!--{% empty %}-->
+					<!--<p>Brak ustawionych alarmów :(</p>-->
+				<!--{% endfor %}-->
+			<!--</div>-->
+
+<script>
+	var last_month = {{ last_month|safe }};
+</script>
+
 	{% endif %}
 {% endblock %}
