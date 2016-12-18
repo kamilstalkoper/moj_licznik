@@ -215,3 +215,6 @@ class Alarm(models.Model):
 
     def get_period_type_description(self):
         return PERIOD_TYPES.get_description_by_number(self.period_type)
+
+    def get_period_class(self):
+        return PERIOD_TYPES.get_period_class(self.period_type)
