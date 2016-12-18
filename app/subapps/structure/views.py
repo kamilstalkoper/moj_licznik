@@ -3,9 +3,10 @@
 
 from __future__ import absolute_import
 
-from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.views.generic import TemplateView
 from django.utils.timezone import now
 from django.utils.decorators import method_decorator
@@ -15,6 +16,7 @@ from .models import (
     Alarm, UserMeterPoint, MeterPointState, MeterData, TariffDefinition)
 
 from app.subapps.statistics.helpers import MeterDataStatistics
+from app.subapps.news.models import Notice, Breakdown
 
 
 @method_decorator(login_required, name='dispatch')
@@ -22,20 +24,27 @@ class HomeView(TemplateView):
     template_name = 'structure/home.html'
 
     def get_context_data(self, **kwargs):
+        context = {}
+        context.update({
+            'notices': self.get_notices(),
+            'breakdowns': self.get_breakdowns(),
+        })
+
         today = now()
-        first_month_day = today - timedelta(days=today.day)
+        year_ago = today + relativedelta(years=-1)
         user_main_meter_point = UserMeterPoint.objects \
             .filter(user_id=self.request.user.id, is_main_meter_point=True) \
             .first()
 
         if user_main_meter_point is None:
-            return {
+            context.update({
                 'error': u'Proszę ustawić licznik główny.'
-            }
+            })
+            return context
 
         meter_data_object = MeterDataStatistics(
-            first_month_day, today, user_main_meter_point.meter_point)
-        last_month_data = meter_data_object.get_meter_date()
+            year_ago, today, user_main_meter_point.meter_point, precision='day')
+        last_year_data = meter_data_object.get_meter_date()
 
         last_meter_point_state = MeterPointState.objects \
             .filter(meter_point_id=user_main_meter_point.meter_point.id) \
@@ -46,8 +55,8 @@ class HomeView(TemplateView):
             .filter(meter_id=last_meter_point_state.meter.id) \
             .only('value', 'acq_time').last()
 
-        context = {
-            'last_month': last_month_data,
+        context.update({
+            'last_year': last_year_data,
             'current_limit': last_meter_point_state.current_power_limit,
 
             'tariff': last_meter_point_state.tariff,
@@ -55,7 +64,7 @@ class HomeView(TemplateView):
                 last_meter_point_state),
 
             'alarms': self.get_user_alarms(),
-        }
+        })
 
         if last_meter_data is not None:
             context.update({
@@ -87,3 +96,15 @@ class HomeView(TemplateView):
             })
 
         return tariff_definition_dict
+
+    def get_notices(self):
+        return Notice.objects \
+            .filter(Q(users__isnull=True) | Q(users=self.request.user)) \
+            .prefetch_related('breakdowns', 'breakdowns__stations') \
+            .order_by('-created_at')[:5]
+
+    def get_breakdowns(self):
+        return Breakdown.objects \
+            .all() \
+            .prefetch_related('stations') \
+            .order_by('-start_at')

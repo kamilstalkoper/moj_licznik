@@ -61,33 +61,26 @@
 			</form>
 			<div class="dashboard-widget-content">
 				{% if notices %}
-				{% if is_searched %}
-				<p>Aktualności spełniające kryterium {{ search_phrase }}:</p>
-				{% endif %}
-				<ul class="list-unstyled timeline widget">
-					{% for notice in notices %}
-					<li>
-						<div class="block">
-							<div class="block_content">
-								<h2 class="title">
-									<a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
-								</h2>
-								<div class="byline">
-									<span>{{ notice.created_at }}</span>
+					<ul class="list-unstyled timeline widget">
+						{% for notice in notices %}
+							<li>
+								<div class="block">
+									<div class="block_content">
+										<h2 class="title">
+											<a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
+										</h2>
+										<div class="byline">
+											<span>{{ notice.created_at }}</span>
+										</div>
+										<p class="excerpt">{{ notice.summary }}</p>
+										<p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
+									</div>
 								</div>
-								<p class="excerpt">{{ notice.summary }}</p>
-								<p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
-							</div>
-						</div>
-					</li>
-					{% endfor %}
-				</ul>
+							</li>
+						{% endfor %}
+					</ul>
 				{% else %}
-				{% if is_searched %}
-				<p>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</p>
-				{% else %}
-				<p>Brak aktualności.</p>
-				{% endif %}
+					<p>Brak aktualności.</p>
 				{% endif %}
 			</div>
 		</div>
@@ -104,28 +97,28 @@
 		</div>
 		<div class="x_content">
 			{% if breakdowns %}
-			<table class="table table-hover">
-				<thead>
-				<tr>
-					<th>Od</th>
-					<th>Do</th>
-					<th>Stacja</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% for breakdown in breakdowns %}
-				{% for station in breakdown.stations.all %}
-				<tr>
-					<th scope="row"><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.start_at|date:'l d E Y H:i' }}</a></th>
-					<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.end_at|date:'l d E Y H:i' }}</a></td>
-					<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ station.address }}</a></td>
-				</tr>
-				{% endfor %}
-				{% endfor %}
-				</tbody>
-			</table>
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th>Od</th>
+						<th>Do</th>
+						<th>Stacja</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for breakdown in breakdowns %}
+						{% for station in breakdown.stations.all %}
+						<tr>
+							<th scope="row"><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.start_at|date:'l d E Y H:i' }}</a></th>
+							<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.end_at|date:'l d E Y H:i' }}</a></td>
+							<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ station.address }}</a></td>
+						</tr>
+						{% endfor %}
+					{% endfor %}
+					</tbody>
+				</table>
 			{% else %}
-			<span>Brak wyłączeń dla Twojego regionu.</span>
+				<span>Brak wyłączeń dla Twojego regionu.</span>
 			{% endif %}
 		</div>
 	</div>
@@ -156,7 +149,7 @@
 		<!--koniec biezace uzycie-->
 			<!--<div>-->
 				<!--<h3>Garść informacji o liczniku</h3>-->
-				<!--<p>Ostatni miesiąc: {{ last_month }}</p>-->
+				<!--<p>Ostatni rok: {{ last_year }}</p>-->
 				<!--<p>Limit MOCY: {{ current_limit }}</p>-->
 				<!--<p>Wartość ostatniego pomiaru: {{ last_meter_data_value|default:'&#45;&#45;&#45;&#45;&#45;&#45;' }}</p>-->
 				<!--<p>Data ostatniego pomiaru: {{ last_meter_data_time|date:"l d E Y H:i"|default:'&#45;&#45;&#45;&#45;&#45;&#45;' }}</p>-->
@@ -188,7 +181,7 @@
 			<!--</div>-->
 
 <script>
-	var last_month = {{ last_month|safe }};
+	var last_month = {{ last_year|safe }};
 </script>
 
 	{% endif %}
