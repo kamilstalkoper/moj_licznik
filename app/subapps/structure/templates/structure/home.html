@@ -7,124 +7,9 @@
 	{% if error %}
 		<h3>{{ error }}</h3>
 	{% else %}
-		<!--biezace zuzycie-->
-		<div class="col-md-4 col-sm-6 col-xs-12">
-			<div class="x_panel">
-				<div class="x_title">
-					<h2>Bieżace zużycie</h2>
-					<ul class="nav navbar-right panel_toolbox">
-						<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-					</ul>
-					<div class="clearfix"></div>
-				</div>
-				<div class="x_content">
-					<div class="dashboard-widget-content">
-						<ul class="quick-list">
-							<li>Ostatni odczyt: 12.12.2016</li>
-							<li>Wskazanie: 4443.5 kWh</li>
-							<li>Limit: 5000 kWh</li>
-						</ul>
-
-						<div class="sidebar-widget">
-							<h4>Zużycie</h4>
-							<canvas width="150" height="80" id="foo2" class="" style="width: 160px; height: 100px;"></canvas>
-							<div class="goal-wrapper">
-								<span id="gauge-text2" class="gauge-value pull-left">5000</span>
-								<span class="gauge-value pull-left">kWh</span>
-								<span class="gauge-value pull-right">kWh</span>
-								<span id="goal-text2" class="goal-value pull-right">{{ current_limit }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-<div class="col-md-8 col-sm-8 col-xs-12">
-	<div class="x_panel">
-		<div class="x_title">
-			<h2>Aktualność</h2>
-			<ul class="nav navbar-right panel_toolbox">
-				<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-			</ul>
-			<div class="clearfix"></div>
-		</div>
-		<div class="x_content" style="display: block;">
-			<form action="{% url 'news:search_notices_view' %}" method="get">
-				<div class="col-xs-12 form-group pull-right top_search">
-					<div class="input-group">
-						<input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </span>
-					</div>
-				</div>
-			</form>
-			<div class="dashboard-widget-content">
-				{% if notices %}
-					<ul class="list-unstyled timeline widget">
-						{% for notice in notices %}
-							<li>
-								<div class="block">
-									<div class="block_content">
-										<h2 class="title">
-											<a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
-										</h2>
-										<div class="byline">
-											<span>{{ notice.created_at }}</span>
-										</div>
-										<p class="excerpt">{{ notice.summary }}</p>
-										<p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
-									</div>
-								</div>
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<p>Brak aktualności.</p>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-</div>
-<div class="col-md-6 col-sm-12 col-xs-12">
-	<div class="x_panel">
-		<div class="x_title">
-			<h2>Aktualne wyłączenia</h2>
-			<ul class="nav navbar-right panel_toolbox">
-				<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-			</ul>
-			<div class="clearfix"></div>
-		</div>
-		<div class="x_content">
-			{% if breakdowns %}
-				<table class="table table-hover">
-					<thead>
-					<tr>
-						<th>Od</th>
-						<th>Do</th>
-						<th>Stacja</th>
-					</tr>
-					</thead>
-					<tbody>
-					{% for breakdown in breakdowns %}
-						{% for station in breakdown.stations.all %}
-						<tr>
-							<th scope="row"><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.start_at|date:'l d E Y H:i' }}</a></th>
-							<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.end_at|date:'l d E Y H:i' }}</a></td>
-							<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ station.address }}</a></td>
-						</tr>
-						{% endfor %}
-					{% endfor %}
-					</tbody>
-				</table>
-			{% else %}
-				<span>Brak wyłączeń dla Twojego regionu.</span>
-			{% endif %}
-		</div>
-	</div>
-</div>
+<div class="container">
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="x_panel">
 			<div class="x_title">
 				<h2>Bieżace zużycie</h2>
@@ -141,10 +26,132 @@
 					<div class="demo-container" style="height:280px">
 						<div id="placeholder33x" class="demo-placeholder"></div>
 					</div>
+					<a href="#" id="simulateEco" class="btn btn-success">Symuluj alternatywne źródła energii</a>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+<div class="row">
+	<!--biezace zuzycie-->
+	<div class="col-md-4 col-sm-6 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>Bieżace zużycie</h2>
+				<ul class="nav navbar-right panel_toolbox">
+					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<div class="dashboard-widget-content">
+					<ul class="quick-list">
+						<li>Ostatni odczyt: 12.12.2016</li>
+						<li>Wskazanie: 4443.5 kWh</li>
+						<li>Limit: 5000 kWh</li>
+					</ul>
+
+					<div class="sidebar-widget">
+						<h4>Zużycie</h4>
+						<canvas width="150" height="80" id="foo2" class="" style="width: 160px; height: 100px;"></canvas>
+						<div class="goal-wrapper">
+							<span id="gauge-text2" class="gauge-value pull-left">5000</span>
+							<span class="gauge-value pull-left">kWh</span>
+							<span class="gauge-value pull-right">kWh</span>
+							<span id="goal-text2" class="goal-value pull-right">{{ current_limit }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8 col-sm-8 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>Aktualność</h2>
+				<ul class="nav navbar-right panel_toolbox">
+					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content" style="display: block;">
+				<form action="{% url 'news:search_notices_view' %}" method="get">
+					<div class="col-xs-12 form-group pull-right top_search">
+						<div class="input-group">
+							<input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+						</span>
+						</div>
+					</div>
+				</form>
+				<div class="dashboard-widget-content">
+					{% if notices %}
+						<ul class="list-unstyled timeline widget">
+							{% for notice in notices %}
+								<li>
+									<div class="block">
+										<div class="block_content">
+											<h2 class="title">
+												<a href="{% url 'news:notice_view' notice.id %}">{{ notice.title }}</a>
+											</h2>
+											<div class="byline">
+												<span>{{ notice.created_at }}</span>
+											</div>
+											<p class="excerpt">{{ notice.summary }}</p>
+											<p><a href="{% url 'news:notice_view' notice.id %}">Zobacz więcej</a></p>
+										</div>
+									</div>
+								</li>
+							{% endfor %}
+						</ul>
+					{% else %}
+						<p>Brak aktualności.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>Aktualne wyłączenia</h2>
+				<ul class="nav navbar-right panel_toolbox">
+					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				{% if breakdowns %}
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th>Od</th>
+							<th>Do</th>
+							<th>Stacja</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for breakdown in breakdowns %}
+							{% for station in breakdown.stations.all %}
+							<tr>
+								<th scope="row"><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.start_at|date:'l d E Y H:i' }}</a></th>
+								<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ breakdown.end_at|date:'l d E Y H:i' }}</a></td>
+								<td><a href="{% url 'news:breakdown_view' breakdown.id %}">{{ station.address }}</a></td>
+							</tr>
+							{% endfor %}
+						{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<span>Brak wyłączeń dla Twojego regionu.</span>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
 </div>
 		<!--koniec biezace uzycie-->
 			<!--<div>-->

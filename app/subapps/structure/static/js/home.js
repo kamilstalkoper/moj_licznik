@@ -117,7 +117,7 @@ $(document).ready(function() {
         for (var i = 0; i < days+1; i++) {
             //new Date(Date.today().add(i).days()).getTime()
             d1.push([startDay+i*86399999, last_month[i]]);
-            d2.push([startDay+i*86399999, last_month[i]-40]);
+            d2.push([startDay+i*86399999, last_month[i]-randNum()]);
         }
 
         //console.log('d1', d1);
@@ -204,21 +204,38 @@ $(document).ready(function() {
             points: {
                 fillColor: "#fff"
             }
+        }], options);
+
+    $('#simulateEco').on('click', function(e){
+        e.preventDefault();
+
+        var plot = $.plot($("#placeholder33x"), [{
+            label: "Zużycie",
+            data: d1,
+            lines: {
+                fillColor: "rgba(150, 202, 89, 0.12)"
+            }, //#96CA59 rgba(150, 202, 89, 0.42)
+            points: {
+                fillColor: "#fff"
+            }
         },
             {
-                label: "Produkcja",
-                data: d2,
-                lines: {
-                    fillColor: "rgba(63, 151, 235, 0.12)"
-                }, //#96CA59 rgba(150, 202, 89, 0.42)
-                points: {
-                    fillColor: "#fff"
-                }
-            }], options);
+            label: "Produkcja",
+            data: d2,
+            lines: {
+                fillColor: "rgba(63, 151, 235, 0.12)"
+            }, //#96CA59 rgba(150, 202, 89, 0.42)
+            points: {
+                fillColor: "#fff"
+            }
+        }], options);
+    })
+
     }
     var todayDate = new Date(),
         today = todayDate.setHours(23,59,59,59),
         sevenDaysAgo = +today-604800000;
+
     drawNewChart(sevenDaysAgo, today);
 
 
