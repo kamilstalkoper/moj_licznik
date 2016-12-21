@@ -33,20 +33,26 @@ class ShowMeterDataForm(forms.Form):
                 u'Data końca nie może byc mniejsza od daty początkowej!')
         return end_date
 
-    def get_meter_data(self):
+    def get_meter_data(self, attach_tariff_data=True):
         start_date = self.cleaned_data.get('start_date')
         end_date = self.cleaned_data.get('end_date')
 
         meter_data_object = MeterDataStatistics(
             start_date, end_date, self.main_meter_point)
         meter_data_list = meter_data_object.get_meter_date()
-        return {
+
+        response_dict = {
             'meter_data': meter_data_list,
             'user_meter_data_sum': sum(meter_data_list),
             'others_avg': meter_data_object.get_other_avg(),
-            'tariff_data': get_tariff_data(),
-            'current_tariff': MeterPointState.objects \
-                .filter(meter_point_id=self.main_meter_point.id) \
-                .select_related('tariff') \
-                .last().tariff
         }
+        if attach_tariff_data:
+            response_dict.update({
+                'tariff_data': get_tariff_data(),
+                'current_tariff': MeterPointState.objects \
+                    .filter(meter_point_id=self.main_meter_point.id) \
+                    .select_related('tariff') \
+                    .last().tariff
+            })
+
+        return response_dict

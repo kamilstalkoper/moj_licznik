@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 
 from .forms import ShowMeterDataForm
@@ -42,3 +43,14 @@ class MainStatisticsView(FormView):
             context = form.get_meter_data()
             context['form'] = form
         return self.render_to_response(context)
+
+
+@method_decorator(login_required, name='dispatch')
+class GetMeterDataView(MainStatisticsView):
+    http_method_names = [u'post', ]
+
+    def form_valid(self, form):
+        context = self.get_context_data(**self.kwargs)
+        if form.main_meter_point is not None:
+            context = form.get_meter_data(attach_tariff_data=False)
+        return JsonResponse(context)
