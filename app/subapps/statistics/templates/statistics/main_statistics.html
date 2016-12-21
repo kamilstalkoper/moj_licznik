@@ -55,3 +55,24 @@
         {% endif %}
     {% endif %}
 {% endblock %}
+
+{% block extra_script %}
+	<script>
+		$.ajax({
+			url: '/zuzycie/api/get_meter_data',
+			dataType: 'json',
+			type: 'POST',
+			data: {
+				'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+				'start_date': '2016-11-01',
+				'end_date': '2016-12-20'
+			},
+			success: function (data, status, xhr) {
+				console.log(data)
+			},
+			error: function (xhr, status, error) {
+				console.log('Błąd: ', xhr.status)
+			}
+		})
+	</script>
+{% endblock %}
