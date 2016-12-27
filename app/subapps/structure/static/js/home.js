@@ -2,32 +2,33 @@
  * Created by piotrekzawada on 12.12.2016.
  */
 $(function() {
-    console.log('init home.js first func')
-    var opts = {
-        lines: 12,
-        angle: 0,
-        lineWidth: 0.4,
-        pointer: {
-            length: 0.75,
-            strokeWidth: 0.042,
-            color: '#1D212A'
-        },
-        limitMax: 'false',
-        colorStart: '#1ABC9C',
-        colorStop: '#1ABC9C',
-        strokeColor: '#F0F3F3',
-        generateGradient: true
-    };
+    if($('.goal-wrapper').length){
+        var opts = {
+            lines: 12,
+            angle: 0,
+            lineWidth: 0.4,
+            pointer: {
+                length: 0.75,
+                strokeWidth: 0.042,
+                color: '#1D212A'
+            },
+            limitMax: 'false',
+            colorStart: '#1ABC9C',
+            colorStop: '#1ABC9C',
+            strokeColor: '#F0F3F3',
+            generateGradient: true
+        };
 
-    var target = document.getElementById('foo2'),
-        gauge = new Gauge(target).setOptions(opts),
-        maxValue= parseInt($('span.goal-value').text()),
-        result = parseInt($('span.gauge-value').text());
+        var target = document.getElementById('foo2'),
+            gauge = new Gauge(target).setOptions(opts),
+            maxValue= parseInt($('span.goal-value').text()),
+            result = parseInt($('span.gauge-value').text());
 
-    gauge.maxValue = maxValue;
-    gauge.animationSpeed = 20;
-    gauge.set(result);
-    gauge.setTextField(document.getElementById("gauge-text2"));
+        gauge.maxValue = maxValue;
+        gauge.animationSpeed = 20;
+        gauge.set(result);
+        gauge.setTextField(document.getElementById("gauge-text2"));
+    }
 
 });
 $(document).ready(function() {
@@ -100,148 +101,146 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function() {
-    function drawNewChart(startDay, endDay) {
-        //define chart clolors ( you maybe add more colors if you want or flot will add it automatic )
-        var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
-            days =parseInt((endDay-startDay)/86399999);
+    if($("#placeholder33x").length){
+        function drawNewChart(startDay, endDay) {
+            //define chart clolors ( you maybe add more colors if you want or flot will add it automatic )
+            var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+                days =parseInt((endDay-startDay)/86399999);
 
-        //generate random number for charts
-        randNum = function() {
-            return (Math.floor(Math.random() * (1 + 40 - 10)));
-        };
+            //generate random number for charts
+            randNum = function() {
+                return (Math.floor(Math.random() * (1 + 40 - 10)));
+            };
 
-        var d1 = [];
-        var d2 = [];
+            var d1 = [];
 
-        //here we generate data for chart from last_month array passed from buttom of home.html
-        for (var i = 0; i < days+1; i++) {
-            //new Date(Date.today().add(i).days()).getTime()
-            d1.push([startDay+i*86399999, last_month[i]]);
-            d2.push([startDay+i*86399999, last_month[i]-randNum()]);
-        }
+            //here we generate data for chart from last_month array passed from buttom of home.html
+            for (var i = 0; i < days+1; i++) {
+                //new Date(Date.today().add(i).days()).getTime()
+                d1.push([startDay+i*86399999, last_month[i]]);
+                //d2.push([startDay+i*86399999, last_month[i]-randNum()]);
+            }
 
-        //console.log('d1', d1);
+            //console.log('d1', d1);
 
-        var chartMinDate = d1[0][0]; //first day
-        var chartMaxDate = d1[days][0]; //last day
+            var chartMinDate = d1[0][0]; //first day
+            var chartMaxDate = d1[days][0]; //last day
 
-        var tickSize = [1, "day"];
-        var tformat = "%d/%m/%y";
-
+            var tickSize = [1, "day"];
+            var tformat = "%d/%m/%y";
 
 
-        //graph options
-        var options = {
-            grid: {
-                show: true,
-                aboveData: true,
-                color: "#3f3f3f",
-                labelMargin: 10,
-                axisMargin: 0,
-                borderWidth: 0,
-                borderColor: null,
-                minBorderMargin: 5,
-                clickable: true,
-                hoverable: true,
-                autoHighlight: true,
-                mouseActiveRadius: 100
-            },
-            series: {
-                lines: {
+
+            //graph options
+            var options = {
+                grid: {
                     show: true,
-                    fill: true,
-                    lineWidth: 2,
-                    steps: false
+                    aboveData: true,
+                    color: "#3f3f3f",
+                    labelMargin: 10,
+                    axisMargin: 0,
+                    borderWidth: 0,
+                    borderColor: null,
+                    minBorderMargin: 5,
+                    clickable: true,
+                    hoverable: true,
+                    autoHighlight: true,
+                    mouseActiveRadius: 100
                 },
-                points: {
-                    show: true,
-                    radius: 4.5,
-                    symbol: "circle",
-                    lineWidth: 3.0
+                series: {
+                    lines: {
+                        show: true,
+                        fill: true,
+                        lineWidth: 2,
+                        steps: false
+                    },
+                    points: {
+                        show: true,
+                        radius: 4.5,
+                        symbol: "circle",
+                        lineWidth: 3.0
+                    }
+                },
+                legend: {
+                    position: "ne",
+                    margin: [0, -25],
+                    noColumns: 0,
+                    labelBoxBorderColor: null,
+                    labelFormatter: function(label, series) {
+                        // just add some space to labes
+                        return label + '&nbsp;&nbsp;';
+                    },
+                    width: 40,
+                    height: 1
+                },
+                colors: chartColours,
+                shadowSize: 0,
+                tooltip: true, //activate tooltip
+                tooltipOpts: {
+                    content: "%s: %y.0",
+                    xDateFormat: "%d/%m",
+                    shifts: {
+                        x: -30,
+                        y: -50
+                    },
+                    defaultTheme: false
+                },
+                yaxis: {
+                    min: 0
+                },
+                xaxis: {
+                    mode: "time",
+                    minTickSize: tickSize,
+                    timeformat: tformat,
+                    min: chartMinDate,
+                    max: chartMaxDate
                 }
-            },
-            legend: {
-                position: "ne",
-                margin: [0, -25],
-                noColumns: 0,
-                labelBoxBorderColor: null,
-                labelFormatter: function(label, series) {
-                    // just add some space to labes
-                    return label + '&nbsp;&nbsp;';
-                },
-                width: 40,
-                height: 1
-            },
-            colors: chartColours,
-            shadowSize: 0,
-            tooltip: true, //activate tooltip
-            tooltipOpts: {
-                content: "%s: %y.0",
-                xDateFormat: "%d/%m",
-                shifts: {
-                    x: -30,
-                    y: -50
-                },
-                defaultTheme: false
-            },
-            yaxis: {
-                min: 0
-            },
-            xaxis: {
-                mode: "time",
-                minTickSize: tickSize,
-                timeformat: tformat,
-                min: chartMinDate,
-                max: chartMaxDate
-            }
-        };
-        var plot = $.plot($("#placeholder33x"), [{
-            label: "Zużycie",
-            data: d1,
-            lines: {
-                fillColor: "rgba(150, 202, 89, 0.12)"
-            }, //#96CA59 rgba(150, 202, 89, 0.42)
-            points: {
-                fillColor: "#fff"
-            }
-        }], options);
+            };
+            $("<div id='tooltip'></div>").css({
+                position: "absolute",
+                display: "none",
+                border: "1px solid #fdd",
+                padding: "2px",
+                "background-color": "#fee",
+                opacity: 0.80
+            }).appendTo("body");
 
-    $('#simulateEco').on('click', function(e){
-        e.preventDefault();
+            $("#placeholder33x").bind("plothover", function (event, pos, item) {
+                if (item) {
+                    var x = item.datapoint[0].toFixed(2),
+                        y = item.datapoint[1].toFixed(2);
 
-        var plot = $.plot($("#placeholder33x"), [{
-            label: "Zużycie",
-            data: d1,
-            lines: {
-                fillColor: "rgba(150, 202, 89, 0.12)"
-            }, //#96CA59 rgba(150, 202, 89, 0.42)
-            points: {
-                fillColor: "#fff"
-            }
-        },
-            {
-            label: "Produkcja",
-            data: d2,
-            lines: {
-                fillColor: "rgba(63, 151, 235, 0.12)"
-            }, //#96CA59 rgba(150, 202, 89, 0.42)
-            points: {
-                fillColor: "#fff"
-            }
-        }], options);
-    })
+                    $("#tooltip").html(y + ' kWh')
+                        .css({top: item.pageY+5, left: item.pageX+5})
+                        .fadeIn(200);
+                } else {
+                    $("#tooltip").hide();
+                }
+            });
 
+            var plot = $.plot($("#placeholder33x"), [{
+                label: "Zużycie",
+                data: d1,
+                lines: {
+                    fillColor: "rgba(150, 202, 89, 0.12)"
+                }, //#96CA59 rgba(150, 202, 89, 0.42)
+                points: {
+                    fillColor: "#fff"
+                }
+            }], options);
+
+        }
+        var todayDate = new Date(),
+            today = todayDate.setHours(23,59,59,59),
+            sevenDaysAgo = +today-604800000;
+
+        drawNewChart(sevenDaysAgo, today);
+
+
+        $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+            console.log("star/end " + picker.startDate + " to " + picker.endDate);
+            var range = parseInt((picker.endDate-picker.startDate)/86399999);
+            drawNewChart(picker.startDate, picker.endDate);
+        });
     }
-    var todayDate = new Date(),
-        today = todayDate.setHours(23,59,59,59),
-        sevenDaysAgo = +today-604800000;
-
-    drawNewChart(sevenDaysAgo, today);
-
-
-    $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-        console.log("star/end " + picker.startDate + " to " + picker.endDate);
-        var range = parseInt((picker.endDate-picker.startDate)/86399999);
-        drawNewChart(picker.startDate, picker.endDate);
-    });
 });

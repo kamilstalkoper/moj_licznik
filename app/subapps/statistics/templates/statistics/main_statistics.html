@@ -7,7 +7,7 @@
         <span>{{ main_meter_error }}</span>
     {% else %}
         {% if meter_data %}
-            <form method="post">
+            <form class="hidden" method="post">
                 {% csrf_token %}
                 <div>
                     <label for="id_start_date">Od</label>
@@ -25,8 +25,7 @@
 			<p>Twoja taryfa: {{ current_tariff.name }}</p>
             <p>Taryfy: {{ tariff_data }}</p>
         {% else %}
-            <h1>Wybierz daty i kliknij "Pokaż" aby zobaczyć zużycie w wybranym przez siebie okresie</h1>
-            <form method="post">
+            <form class="hidden" method="post">
                 {% csrf_token %}
                 <div>
                     <label for="id_start_date">Od</label>
@@ -54,25 +53,55 @@
             </form>
         {% endif %}
     {% endif %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Bieżace zużycie</h2>
+                <div class="filter">
+                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                        <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="demo-container" style="height:280px">
+                        <div id="placeholder1" class="demo-placeholder"></div>
+                    </div>
+                    <div class="tiles" id="statisticTiles">
+                        <div class="col-md-4 tile">
+                            <div class="form-group col-sm-12 col-no-pd">
+                                <label class="control-label col-md-4 col-sm-4 col-xs-12 col-no-pd">Moc źródła</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-no-pd">
+                                    <input type="text" id="powerSource" class="form-control" placeholder="Moc (w kW)">
+                                </div>
+                            </div>
+                            <a href="#" id="simulateEco" class="btn btn-success">Symuluj alternatywne źródła energii</a>
+                        </div>
+                        <div class="col-md-4 tile">
+                            <span>Suma w wybranym przedziale czasu</span>
+                            <h2 id="yourSum"></h2>
+                            <div class="ecoSum hidden">
+                                <span>W tym przedziale wyprodukowałbyś</span>
+                                <h2 id="producedSum"></h2>
+                            </div>
+                        </div>
+                        <div class="col-md-4 tile">
+                            <span>Średnia suma sąsiadów</span>
+                            <h2 id="neighborsSum"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_script %}
-	<script>
-		$.ajax({
-			url: '/zuzycie/api/get_meter_data',
-			dataType: 'json',
-			type: 'POST',
-			data: {
-				'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-				'start_date': '2016-11-01',
-				'end_date': '2016-12-20'
-			},
-			success: function (data, status, xhr) {
-				console.log(data)
-			},
-			error: function (xhr, status, error) {
-				console.log('Błąd: ', xhr.status)
-			}
-		})
-	</script>
+
 {% endblock %}

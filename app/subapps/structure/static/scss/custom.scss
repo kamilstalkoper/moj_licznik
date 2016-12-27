@@ -527,6 +527,35 @@ table.no-margin .progress {
   margin-left: -10px;
 }
 
+.col-no-pd {
+  padding-left: 0 !important;
+  padding-right: 0 !important
+}
+
+@media (max-width: 767px) {
+  .col-xs-no-pd {
+    padding: 0 !important
+  }
+}
+
+@media (min-width: 544px) {
+  .col-sm-no-pd {
+    padding: 0 !important
+  }
+}
+
+@media (min-width: 768px) {
+  .col-md-no-pd {
+    padding: 0 !important
+  }
+}
+
+@media (min-width: 992px) {
+  .col-lg-no-pd {
+    padding: 0 !important
+  }
+}
+
 .grid_slider .col-md-6 {
   padding: 0 40px;
 }
@@ -894,6 +923,9 @@ footer {
   margin-top: 15px;
   padding-top: 5px;
   margin-bottom: 0;
+}
+#statisticTiles{
+  display: none;
 }
 
 .tile {
