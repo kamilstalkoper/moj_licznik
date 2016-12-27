@@ -49,10 +49,10 @@ class ShowMeterDataForm(forms.Form):
         if attach_tariff_data:
             response_dict.update({
                 'tariff_data': get_tariff_data(),
-                'current_tariff': MeterPointState.objects \
-                    .filter(meter_point_id=self.main_meter_point.id) \
-                    .select_related('tariff') \
-                    .last().tariff
+                'current_tariff': MeterPointState.objects
+                    .filter(meter_point_id=self.main_meter_point.id)
+                    .select_related('tariff')
+                    .last().tariff.name
             })
 
         return response_dict
