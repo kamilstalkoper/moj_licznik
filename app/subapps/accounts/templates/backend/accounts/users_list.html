@@ -3,50 +3,64 @@
 {% block title %}Lista wątków{% endblock %}
 
 {% block content %}
-    <h3>Lista użytkowników</h3>
-    <a href="{% url 'backend:add_user_view' %}">Dodaj nowego użytkownika</a>
-    <div>
-        <form action="{% url 'backend:search_users_view' %}" method="get">
-            <div>
-                <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
-                <button type="submit">Szukaj</button>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Lista użytkowników</h2>
+                <div class="clearfix"></div>
             </div>
-        </form>
+            <div class="x_content">
+                <form action="{% url 'backend:search_users_view' %}" method="get" class="form-horizontal form-label-left">
+                    <div class="form-group">
+                        <label class="control-label col-md-2 col-sm-3 col-xs-12" for="id_q">Szukaj użytkownika</label>
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                            <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %} class="form-control col-md-7 col-xs-12">
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <button type="submit" class="btn btn-success">Szukaj</button>
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nazwa użytkownika</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Email</th>
+                        <th>Status administratora</th>
+                        <th>Aktywny</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name|default:'------' }}</td>
+                        <td>{{ user.last_name|default:'------' }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{% if user.is_staff or user.is_superuser %}Tak{% else %}Nie{% endif %}</td>
+                        <td>{{ user.is_active|yesno:'Tak,Nie' }}</td>
+                        <td><a href="{% url 'backend:show_user_profile_view' user.id %}">Wyświetl szczegóły</a></td>
+                        <td><a href="{% url 'backend:backend_new_problem_view' user.id %}">Napisz wiadomość</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>Brak użytkowników</tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% include 'structure/pagination.html' %}
+                <div class="col-sm-12 col-no-pd">
+                    <a class="btn btn-default" href="{% url 'backend:add_user_view' %}">Dodaj nowego użytkownika</a>
+                </div>
+            </div>
+        </div>
     </div>
-    {% if is_searched %}
-        <span>Użytkownicy spełniający kryterium {{ search_phrase }}:</span>
-    {% endif %}
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nazwa użytkownika</th>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Email</th>
-                <th>Status administratora</th>
-                <th>Aktywny</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.first_name|default:'------' }}</td>
-                    <td>{{ user.last_name|default:'------' }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{% if user.is_staff or user.is_superuser %}Tak{% else %}Nie{% endif %}</td>
-                    <td>{{ user.is_active|yesno:'Tak,Nie' }}</td>
-                    <td><a href="{% url 'backend:show_user_profile_view' user.id %}">Wyświetl szczegóły</a></td>
-                    <td><a href="{% url 'backend:backend_new_problem_view' user.id %}">Napisz wiadomość</a></td>
-                </tr>
-            {% empty %}
-                <tr>Brak użytkowników</tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include 'structure/pagination.html' %}
+</div>
+
 {% endblock %}

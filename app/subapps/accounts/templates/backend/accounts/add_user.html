@@ -3,91 +3,130 @@
 {% block title %}Dodaj użytkownika{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_username">Nazwa użytkownika:</label>
-            <input type="text" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}" required>
-            {% with form.username.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Dane użytkownika</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_username">
+                            Nazwa użytkownika:
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="username" id="id_username" maxlength="30" value="{{ form.username.value|default:'' }}" required>
+                            {% with form.username.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
 
-        <div>
-            <label for="id_first_name">Imię:</label>
-            <input type="text" name="first_name" id="id_first_name" maxlength="30" value="{{ form.first_name.value|default:'' }}">
-            {% with form.first_name.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_first_name">Imię:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="first_name" id="id_first_name" maxlength="30" value="{{ form.first_name.value|default:'' }}">
+                            {% with form.first_name.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
 
-        <div>
-            <label for="id_last_name">Nazwisko:</label>
-            <input type="text" name="last_name" id="id_last_name" maxlength="30" value="{{ form.last_name.value|default:'' }}">
-            {% with form.last_name.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_last_name">Nazwisko:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="text" name="last_name" id="id_last_name" maxlength="30" value="{{ form.last_name.value|default:'' }}">
+                            {% with form.last_name.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_email">
+                            E-mail:
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" required>
+                            {% with form.email.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_password1">
+                            Hasło:
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="password" name="password1" id="id_password1" required>
+                            {% with form.password1.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_password2">
+                            Hasło:
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="password" name="password2" id="id_password2" required>
+                            {% with form.password2.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_is_staff">
+                            W zespole:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="checkbox" name="is_staff" id="id_is_staff" {% if form.is_staff.value %}checked{% endif %}>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_is_active">
+                            Jest aktywny:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" type="checkbox" name="is_active" id="id_is_active" {% if form.is_active.value %}checked{% endif %}>
+                        </div>
+                    </div>
 
-        <div>
-            <label for="id_email">E-mail:</label>
-            <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" required>
-            {% with form.email.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+                    <div class="ln_solid"></div>
 
-        <div>
-            <label for="id_password1">Hasło:</label>
-            <input type="password" name="password1" id="id_password1" required>
-            {% with form.password1.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button class="btn btn-success" type="submit">Zarejestruj</button>
+                            <button class="btn btn-warning" type="reset">Wyczyść</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div>
-            <label for="id_password2">Powtórz hasło:</label>
-            <input type="password" name="password2" id="id_password2" required>
-            {% with form.password2.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-
-        <div>
-            <label for="id_is_staff">W zespole:</label>
-            <input type="checkbox" name="is_staff" id="id_is_staff" {% if form.is_staff.value %}checked{% endif %}>
-        </div>
-
-        <div>
-            <label for="id_is_active">Aktywny:</label>
-            <input type="checkbox" name="is_active" id="id_is_active" {% if form.is_active.value %}checked{% endif %}>
-        </div>
-
-        <button type="submit">Zarejestruj</button>
-        <button type="reset">Wyczyść</button>
-    </form>
+    </div>
+</div>
 {% endblock %}
