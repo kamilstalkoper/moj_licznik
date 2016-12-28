@@ -183,11 +183,35 @@ $(document).ready(function() {
         })
 
     }
-    var todayDate = new Date(),
-        today = todayDate.setHours(23,59,59,59),
-        sevenDaysAgo = +today-604800000;
+    //var today = new Date().toISOString().slice(0, 10),
+    //    sevenDaysAgo = new Date();
+    //
+    //sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
+    //var sevenDaysAgo = sevenDaysAgo.toISOString().slice(0, 10);
+    //
+    //console.log('today', today, 'sevenDaysAgo', sevenDaysAgo);
+    //
+    //$.ajax({
+    //    url: '/zuzycie/api/get_meter_data',
+    //    dataType: 'json',
+    //    type: 'POST',
+    //    data: {
+    //        'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+    //        'start_date': today,
+    //        'end_date': sevenDaysAgo
+    //    },
+    //    success: function (data, status, xhr) {
+    //        console.log(data)
+    //        drawNewChart(today, sevenDaysAgo, data.meter_data);
+    //        $('#yourSum').html(data.user_meter_data_sum + ' kWh');
+    //        $('#neighborsSum').html(data.others_avg + ' kWh');
+    //        $('#statisticTiles').show();
+    //    },
+    //    error: function (xhr, status, error) {
+    //        console.log('Błąd: ', xhr.status)
+    //    }
+    //});
 
-    //drawNewChart(sevenDaysAgo, today);
 
 
     $('#reportrange').on('apply.daterangepicker', function(ev, picker) {

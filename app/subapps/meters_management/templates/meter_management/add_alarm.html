@@ -3,35 +3,74 @@
 {% block title %}Dodaj alarm{% endblock %}
 
 {% block content %}
-<div>
-	<form method="post">
-		{% csrf_token %}
-		<div>
-			<label for="id_meter">Licznik:</label>
-			<select id="id_meter" name="meter" required="">
-				{% for value, description in form.meter.field.choices %}
-					<option value="{{ value }}" {% if form.meter.value == value %}selected{% endif %}>{{ description }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<div>
-			<label for="id_limit">Limit:</label>
-			<input id="id_limit" name="limit" type="number" value="{{ form.limit.value|default:'' }}" required>
-			<span>kWh</span>
-		</div>
-		<div>
-			<label for="id_period">Okres:</label>
-			<input id="id_period" name="period" type="number" value="{{ form.period.value|default:'' }}" required>
-		</div>
-		<div>
-			<label for="id_period_type">Typ okresu:</label>
-			<select id="id_period_type" name="period_type" required="">
-				{% for value, description in form.period_type.field.choices %}
-					<option value="{{ value }}" {% if form.period_type.value == value %}selected{% endif %}>{{ description }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<button type="submit">Zapisz</button>
-	</form>
+<div class="page-title">
+	<div class="title_left">
+		<h3>Dodaj alarm</h3>
+	</div>
 </div>
+<div class="clearfix"></div>
+<div class="row">
+	<div class="col-md-6 col-sm-6 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2>Dodaj Alarm</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+				<form method="post" class="form-horizontal form-label-left">
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_meter">
+							Licznik
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<select id="id_meter" name="meter" class="form-control" required="">
+								{% for value, description in form.meter.field.choices %}
+								<option value="{{ value }}" {% if form.meter.value == value %}selected{% endif %}>{{ description }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_limit">
+							Limit
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input class="form-control col-md-7 col-xs-12" id="id_limit" name="limit" type="number" value="{{ form.limit.value|default:'' }}" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_period_type">
+							Typ okresu
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<select id="id_period_type" name="period_type" class="form-control" required="">
+								{% for value, description in form.period_type.field.choices %}
+								<option value="{{ value }}" {% if form.period_type.value == value %}selected{% endif %}>{{ description }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_period">
+							Okres
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input class="form-control col-md-7 col-xs-12" id="id_period" name="period" type="number" value="{{ form.period.value|default:'' }}" required>
+						</div>
+					</div>
+
+					<div class="ln_solid"></div>
+
+					<div class="form-group">
+						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+							<button class="btn btn-success" type="submit">Zapisz</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
