@@ -3,32 +3,81 @@
 {% block title %}Lista wątków{% endblock %}
 
 {% block content %}
-    {% if problems %}
-        <ul>
-            {% for problem in problems %}
-                {% with problem.get_last_message as last_message %}
-                    <li>
-                        <a href="{% url 'backend:backend_problem_messages_view' problem.id %}">
-                            <p>Rozwiązany: {{ problem.solved|yesno:'Tak,Nie' }}</p>
-                            <p>Żądanie elektryka: {{ problem.electrician_needed|yesno:'Tak,Nie' }}</p>
-                            <p>Data ostatniej wiadomości: {{ last_message.created_at }}</p>
-                            <p>Ostatnia wiadomość: {{ last_message.content }}</p>
-                        </a>
-                        {% if not problem.solved %}
-                            <form method="post" action="{% url 'backend:backend_set_as_solved' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="problem_id" value="{{ problem.id }}">
-                                <input type="hidden" name="redirect_to" value="{{ request.path }}">
-                                <button class="btn btn-success">Oznacz jako rozwiązany</button>
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endwith %}
-            {% endfor %}
-        </ul>
-    {% else %}
-        <span>Brak wątków.</span>
-    {% endif %}
 
-    {% include 'structure/pagination.html' %}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Wiadomość</h2>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            {% if problems %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Data ostatniej wiadomości</th>
+                    <th>Ostatnia wiadomość</th>
+                    <th>Rozwiązany</th>
+                    <th>Żądanie elektryka</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for problem in problems %}
+                    {% with problem.get_last_message as last_message %}
+                    <tr>
+                        <th scope="row"><a href="{% url 'backend:backend_problem_messages_view' problem.id %}">{{ last_message.created_at }}</a></th>
+                        <td><a href="{% url 'backend:backend_problem_messages_view' problem.id %}">{{ last_message.content }}</a></td>
+                        <td>{{ problem.solved|yesno:'Tak,Nie' }}</td>
+                        <td>{{ problem.electrician_needed|yesno:'Tak,Nie' }}</td>
+                        {% if not problem.solved %}
+                            <td>
+                                <form method="post" action="{% url 'backend:backend_set_as_solved' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="problem_id" value="{{ problem.id }}">
+                                    <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                                    <button class="btn btn-success">Oznacz jako rozwiązany</button>
+                                </form>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <span>Brak wyłączeń dla Twojego regionu.</span>
+            {% endif %}
+            {% include 'structure/pagination.html' %}
+        </div>
+    </div>
+</div>
+
+    <!--{% if problems %}-->
+        <!--<ul>-->
+            <!--{% for problem in problems %}-->
+                <!--{% with problem.get_last_message as last_message %}-->
+                    <!--<li>-->
+                        <!--<a href="{% url 'backend:backend_problem_messages_view' problem.id %}">-->
+                            <!--<p>Rozwiązany: {{ problem.solved|yesno:'Tak,Nie' }}</p>-->
+                            <!--<p>Żądanie elektryka: {{ problem.electrician_needed|yesno:'Tak,Nie' }}</p>-->
+                            <!--<p>Data ostatniej wiadomości: {{ last_message.created_at }}</p>-->
+                            <!--<p>Ostatnia wiadomość: {{ last_message.content }}</p>-->
+                        <!--</a>-->
+                        <!--{% if not problem.solved %}-->
+                            <!--<form method="post" action="{% url 'backend:backend_set_as_solved' %}">-->
+                                <!--{% csrf_token %}-->
+                                <!--<input type="hidden" name="problem_id" value="{{ problem.id }}">-->
+                                <!--<input type="hidden" name="redirect_to" value="{{ request.path }}">-->
+                                <!--<button class="btn btn-success">Oznacz jako rozwiązany</button>-->
+                            <!--</form>-->
+                        <!--{% endif %}-->
+                    <!--</li>-->
+                <!--{% endwith %}-->
+            <!--{% endfor %}-->
+        <!--</ul>-->
+    <!--{% else %}-->
+        <!--<span>Brak wątków.</span>-->
+    <!--{% endif %}-->
+
+
 {% endblock %}

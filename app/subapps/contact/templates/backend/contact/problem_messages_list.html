@@ -3,102 +3,86 @@
 {% block title %}Lista wiadomości w wątku{% endblock %}
 
 {% block content %}
-    <div>
-        <div class="page-title">
-            <div class="title_left">
-                <h3>Wiadomości w wątku</h3>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Napisz wiadomość</h2>
+                <div class="clearfix"></div>
             </div>
-            <div class="title_right">
-                <div class="pull-right">
-                    <a href="{% url 'backend:backend_problems_view' %}">&laquo; Powrót do listy wątków</a>
-                    {% if problem_solved %}
-                        <form method="post" action="{% url 'contact:set_as_solved' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="problem_id" value="{{ problem_id }}">
-                            <input type="hidden" name="redirect_to" value="{{ request.path }}">
-                            <button class="btn btn-success">Oznacz jako rozwiązany</button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Napisz wiadomość</h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                            <form action="{% url 'backend:backend_send_message_view' problem_id %}" method="post">
-                                {% csrf_token %}
-                                <div>
-                                    <label for="id_message_content">Wiadomość:</label>
-                                    <textarea name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
-                                    {% with form.message_content.errors as errors %}
-                                        <ul>
-                                            {% for error in errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endwith %}
-                                </div>
-                                <div>
-                                    <label for="id_send_copy_to_me">Wyślij kopię wiadomości do użytkownika: </label>
-                                    <input type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" checked>
-                                </div>
-                                <button type="submit">Wyślij</button>
-                            </form>
+            <div class="x_content">
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                    <form action="{% url 'backend:backend_send_message_view' problem_id %}" method="post" class="form-horizontal form-label-left">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_message_content">Wiadomość:</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control col-md-7 col-xs-12" name="message_content" id="id_message_content">{{ form.message_content.value|default:'' }}</textarea>
+                                {% with form.message_content.errors as errors %}
+                                    <ul>
+                                        {% for error in errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endwith %}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Wiadomośi</h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <ul class="messages">
-                                {% for message in messages %}
-                                    <li>
-                                        <div class="message_date">
-                                            <h3 class="date text-info">{{ message.created_at|date:'d' }}</h3>
-                                            <p class="month">{{ message.created_at|date:'E' }}</p>
-                                        </div>
-                                        <div class="message_wrapper">
-                                            {% if message.is_admin_replay %}
-                                                <h4 class="heading">Administrator</h4>
-                                                <blockquote class="message">{{ message.content }}</blockquote>
-                                            {% else %}
-                                                <h4 class="heading">Ja</h4>
-                                                <blockquote class="message">{{ message.content }}</blockquote>
-                                            {% endif %}
-                                            <br>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            {% include 'structure/pagination.html' %}
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_send_copy_to_me">Wyślij kopię wiadomości do użytkownika: </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control col-md-7 col-xs-12" type="checkbox" name="send_copy_to_me" id="id_send_copy_to_me" checked>
+                            </div>
                         </div>
-                    </div>
+                        <button type="submit" class="btn btn-success">Wyślij</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Wiadomośi</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>
+                                <div class="message_date">
+                                    <h3 class="date text-info">{{ message.created_at|date:'d' }}</h3>
+                                    <p class="month">{{ message.created_at|date:'E' }}</p>
+                                </div>
+                                <div class="message_wrapper">
+                                    {% if message.is_admin_replay %}
+                                        <h4 class="heading">Administrator</h4>
+                                        <blockquote class="message">{{ message.content }}</blockquote>
+                                    {% else %}
+                                        <h4 class="heading">Ja</h4>
+                                        <blockquote class="message">{{ message.content }}</blockquote>
+                                    {% endif %}
+                                    <br>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% include 'structure/pagination.html' %}
+                    {% if problem_solved %}
+                    <form method="post" action="{% url 'contact:set_as_solved' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="problem_id" value="{{ problem_id }}">
+                        <input type="hidden" name="redirect_to" value="{{ request.path }}">
+                        <button class="btn btn-success">Oznacz jako rozwiązany</button>
+                    </form>
+                    {% endif %}
+                    <a href="{% url 'backend:backend_problems_view' %}">&laquo; Powrót do listy wątków</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
