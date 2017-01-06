@@ -3,46 +3,55 @@
 {% block title %}Lista aktualności{% endblock %}
 
 {% block content %}
-    <a href="">Dodaj nowy licznik</a>
-    <div class="mid_center">
-        <form method="get">
-            <div class="col-xs-12 form-group pull-right top_search">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %}>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">Szukaj</button>
-                    </span>
-                </div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Lista liczników</h2>
+                <div class="clearfix"></div>
             </div>
-        </form>
+            <div class="x_content">
+                <form action="{% url 'backend:search_users_view' %}" method="get" class="form-horizontal form-label-left">
+                    <div class="form-group">
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                            <input type="text" name="q" id="id_q" placeholder="Szukaj..." {% if is_searched %}value="{{ search_phrase }}"{% endif %} class="form-control col-md-7 col-xs-12">
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <button type="submit" class="btn btn-success">Szukaj</button>
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Numer seryjny</th>
+                        <th>Model</th>
+                        <th>Data wykrycia przez AMI</th>
+                        <th>Podłączony do stacji</th>
+                        <th>Aktywny</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for meter in meters %}
+                    <tr>
+                        <td><a href="{% url 'backend:meters_details_view' meter.id %}">{{ meter.serial_number }}</a></td>
+                        <td>{{ meter.model_name }}</td>
+                        <td>{{ meter.detection_report_date|date:'d E Y' }}</td>
+                        <td>{{ meter.station }}</td>
+                        <td>{{ meter.is_active|yesno:'Tak,Nie' }}</td>
+                        <td><a href="{% url 'backend:edit_meter_view' meter.id %}">Edytuj</a></td>
+                        <td><a href="{% url 'backend:delete_meter_view' meter.id %}">Usuń</a></td>
+                        <td><a href="{% url 'backend:change_meter_owners_view' meter.id %}">Edytuj listę właścicieli</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>Brak liczników</tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% include 'structure/pagination.html' %}
+            </div>
+        </div>
     </div>
-    {% if meters %}
-        {% if is_searched %}
-            <span>Liczniki spełniające kryterium {{ search_phrase }}:</span>
-        {% endif %}
-        <ul>
-            {% for meter in meters %}
-                <li>
-                    <a href="{% url 'backend:meters_details_view' meter.id %}">
-                        <p>Numer seryjny: {{ meter.serial_number }}</p>
-                        <p>Model: {{ meter.model_name }}</p>
-                        <p>Aktywny: {{ meter.is_active|yesno:'Tak,Nie' }}</p>
-                        <p>Data wykrycia przez AMI: {{ meter.detection_report_date|date:'d E Y' }}</p>
-                        <p>Podłączony do stacji: {{ meter.station }}</p>
-                    </a>
-                    <a href="{% url 'backend:edit_meter_view' meter.id %}">Edytuj</a>
-                    <a href="{% url 'backend:delete_meter_view' meter.id %}">Usuń</a>
-                    <a href="{% url 'backend:change_meter_owners_view' meter.id %}">Edytuj listę właścicieli</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        {% if is_searched %}
-            <span>Nie znaleziono aktualności pasujących do frazy: {{ search_phrase }}</span>
-        {% else %}
-            <span>Brak aktualności.</span>
-        {% endif %}
-    {% endif %}
-
-    {% include 'structure/pagination.html' %}
+</div>
 {% endblock %}

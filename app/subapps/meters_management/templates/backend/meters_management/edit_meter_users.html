@@ -5,25 +5,53 @@
 {% block title %}Usuń licznik{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_users">Użytkownicy:</label>
-            <select multiple="multiple" id="id_users" name="users" required>
-                {% with form.users.value|strings_list_as_int_list as users_list %}
-                    {% for user_id, username in form.users.field.choices %}
-                        <option value="{{ user_id }}" {% if user_id in users_list %}selected{% endif %}>{{ username }}</option>
-                    {% endfor %}
-                {% endwith %}
-            </select>
-            {% with form.users.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Edytuj dane użytkowników licznika</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Dane użytkownika</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_users">Użytkownicy:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select multiple="multiple" id="id_users" name="users" class="form-control col-md-7 col-xs-12" required>
+                                {% with form.users.value|strings_list_as_int_list as users_list %}
+                                {% for user_id, username in form.users.field.choices %}
+                                <option value="{{ user_id }}" {% if user_id in users_list %}selected{% endif %}>{{ username }}</option>
+                                {% endfor %}
+                                {% endwith %}
+                            </select>
+                            {% with form.users.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="ln_solid"></div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button class="btn btn-success" type="submit">Zapisz</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <button type="submit">Zapisz</button>
-    </form>
+    </div>
+</div>
 {% endblock %}

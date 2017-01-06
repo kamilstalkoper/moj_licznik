@@ -3,14 +3,26 @@
 {% block title %}Usuń licznik{% endblock %}
 
 {% block content %}
-    <div>
-        Czy na pewno chcesz usunąć licznik {{ meter.serial_number }}?
-        Pamiętaj, że spowoduje to usunięcie wszystkich powiązanych z nim obiektów...
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Czy na pewno chcesz usunąć licznik {{ meter.serial_number }}?</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <button class="btn btn-danger" type="submit">Usuń</button>
+                            <a href="{% url 'backend:meters_list_view' %}" class="btn btn-warning">Może jedna zostawię...</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Tak, chcę</button>
-    </form>
-
-    <a href="{% url 'backend:meters_list_view' %}">Może jedna zostawię...</a>
+</div>
 {% endblock %}

@@ -3,69 +3,110 @@
 {% block title %}Dodaj licznik{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_model_name">Nazwa modelu:</label>
-            <input id="id_model_name" maxlength="255" name="model_name" type="text" value="{{ form.model_name.value|default:'' }}">
-            {% with form.model_name.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-        <div>
-            <label for="id_serial_number">Numer seryjny:</label>
-            <input id="id_serial_number" maxlength="255" name="serial_number" type="text" value="{{ form.serial_number.value }}" required>
-            {% with form.serial_number.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-        <div>
-            <label for="id_is_active">Aktywny?</label>
-            <input {% if form.is_active.value %}checked{% endif %} id="id_is_active" name="is_active" type="checkbox">
-            {% with form.is_active.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-        <div>
-            <label for="id_detection_report_date">Data wykrycia licznika przez AMI:</label>
-            <span>{{ form.detection_report_date.value }}</span>
-            <input type="hidden" name="detection_report_date" value="{{ form.detection_report_date.value|date:'Y-m-d H:i:s' }}">
-            {% with form.detection_report_date.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-        <div>
-            <label for="id_station">Stacja:</label>
-            <select id="id_station" name="station" required>
-                {% for val, description in form.station.field.choices %}
-                    <option value="{{ val }}" {% if form.station.value == val %}selected{% endif %}>{{ description }}</option>
-                {% endfor %}
-            </select>
-            {% with form.station.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
 
-        <button type="submit">Zapisz</button>
-    </form>
+<div class="page-title">
+    <div class="title_left">
+        <h3>Edytuj dane</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Dane użytkownika</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_model_name">
+                            Nazwa modelu
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" id="id_model_name" maxlength="255" name="model_name" type="text" value="{{ form.model_name.value|default:'' }}">
+                            {% with form.model_name.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_serial_number">Numer seryjny</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" id="id_serial_number" maxlength="255" name="serial_number" type="text" value="{{ form.serial_number.value }}" required>
+                            {% with form.serial_number.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_is_active">Aktywny</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12"{% if form.is_active.value %}checked{% endif %} id="id_is_active" name="is_active" type="checkbox">
+                            {% with form.is_active.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_detection_report_date">Data wykrycia licznika przez AMI:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" id="id_detection_report_date" type="text" value="{{ form.detection_report_date.value }}" disabled>
+                            <input type="hidden" name="detection_report_date" value="{{ form.detection_report_date.value|date:'Y-m-d H:i:s' }}">
+                            {% with form.detection_report_date.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_station">Stacja:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="id_station" name="station" class="form-control col-md-7 col-xs-12" required>
+                                {% for val, description in form.station.field.choices %}
+                                <option value="{{ val }}" {% if form.station.value == val %}selected{% endif %}>{{ description }}</option>
+                                {% endfor %}
+                            </select>
+                            {% with form.station.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <div class="ln_solid"></div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button class="btn btn-success" type="submit">Zapisz</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
