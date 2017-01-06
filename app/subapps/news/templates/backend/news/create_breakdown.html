@@ -5,62 +5,80 @@
 {% block title %}Nowe wyłączenie{% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="id_start_at">Od:</label>
-            <input id="id_start_at" name="start_at" type="datetime" value="{{ form.start_at.value|default:''|date:'Y-m-d H:i:s' }}" required>
-            {% with form.start_at.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Wyłączenie</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_start_at">Od:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" id="id_start_at" name="start_at" type="datetime" value="{{ form.start_at.value|default:''|date:'Y-m-d H:i:s' }}" required>
+                                {% with form.start_at.errors as errors %}
+                                <ul>
+                                    {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_end_at">Do:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input class="form-control col-md-7 col-xs-12" id="id_end_at" name="end_at" type="datetime" value="{{ form.end_at.value|default:''|date:'Y-m-d H:i:s' }}" required>
+                            {% with form.end_at.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_reason">Powód:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <textarea class="form-control col-md-7 col-xs-12"  cols="40" id="id_reason" name="reason" rows="10" required="">{{ form.reason.value|default:'' }}</textarea>
+                            {% with form.reason.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="id_stations">Powiązane stacje:</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select class="form-control col-md-7 col-xs-12" multiple="multiple" id="id_stations" name="stations">
+                                {% with form.stations.value|strings_list_as_int_list as stations_list %}
+                                {% for station_id, station_label in form.stations.field.choices %}
+                                <option value="{{ station_id }}" {% if station_id in stations_list %}selected{% endif %}>{{ station_label }}</option>
+                                {% endfor %}
+                                {% endwith %}
+                            </select>
+                            {% with form.stations.errors as errors %}
+                            <ul>
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
 
-        <div>
-            <label for="id_end_at">Do:</label>
-            <input id="id_end_at" name="end_at" type="datetime" value="{{ form.end_at.value|default:''|date:'Y-m-d H:i:s' }}" required>
-            {% with form.end_at.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
+                    <div class="ln_solid"></div>
+                    <button type="submit" class="btn btn-success">Zatwierdź</button>
+                </form>
+            </div>
         </div>
-
-        <div>
-            <label for="id_reason">Powód:</label>
-            <textarea cols="40" id="id_reason" name="reason" rows="10" required="">{{ form.reason.value|default:'' }}</textarea>
-            {% with form.reason.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-
-        <div>
-            <label for="id_stations">Powiązane stacje:</label>
-            <select multiple="multiple" id="id_stations" name="stations">
-                {% with form.stations.value|strings_list_as_int_list as stations_list %}
-                    {% for station_id, station_label in form.stations.field.choices %}
-                        <option value="{{ station_id }}" {% if station_id in stations_list %}selected{% endif %}>{{ station_label }}</option>
-                    {% endfor %}
-                {% endwith %}
-            </select>
-            {% with form.stations.errors as errors %}
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endwith %}
-        </div>
-
-        <button type="submit">Zatwierdź</button>
-    </form>
+    </div>
+</div>
 {% endblock %}
