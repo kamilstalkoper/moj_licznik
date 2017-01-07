@@ -7,6 +7,8 @@ $(document).ready(function() {
         var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
             days =parseInt((endDay-startDay)/86399999);
 
+        console.log('days', days);
+
         //generate random number for charts
         randNum = function() {
             return (Math.floor(Math.random() * (1 + 40 - 10)));
@@ -15,21 +17,29 @@ $(document).ready(function() {
         var d1 = [],
             d2 = [];
 
-        //here we generate data for chart from last_month array passed from buttom of home.html
-        for (var i = 0; i < days+1; i++) {
-            //new Date(Date.today().add(i).days()).getTime()
-            d1.push([startDay+i*86399999, meter_data[i]]);
+        if(days == 1) {
+            console.log('days 1')
+            for (var i = 0; i < 24; i++) {
+                d1.push([startDay + i * 3600000, meter_data[i]]);
 
+            }
+            var tickSize = [1, "hour"];
+            var tformat = "%H";
+
+            var chartMinDate = d1[0][0]; //first day
+            var chartMaxDate = d1[23][0]; //last day
+        }else{
+            console.log('else')
+            for (var i = 0; i < days + 1; i++) {
+                d1.push([startDay + i * 86399999, meter_data[i]]);
+
+            }
+            var tickSize = [1, "day"];
+            var tformat = "%d/%m/%y";
+
+            var chartMinDate = d1[0][0]; //first day
+            var chartMaxDate = d1[days][0]; //last day
         }
-
-        //console.log('d1', d1);
-
-        var chartMinDate = d1[0][0]; //first day
-        var chartMaxDate = d1[days][0]; //last day
-
-        var tickSize = [1, "day"];
-        var tformat = "%d/%m/%y";
-
 
 
         //graph options
@@ -183,42 +193,14 @@ $(document).ready(function() {
         })
 
     }
-    //var today = new Date().toISOString().slice(0, 10),
-    //    sevenDaysAgo = new Date();
-    //
-    //sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
-    //var sevenDaysAgo = sevenDaysAgo.toISOString().slice(0, 10);
-    //
-    //console.log('today', today, 'sevenDaysAgo', sevenDaysAgo);
-    //
-    //$.ajax({
-    //    url: '/zuzycie/api/get_meter_data',
-    //    dataType: 'json',
-    //    type: 'POST',
-    //    data: {
-    //        'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
-    //        'start_date': today,
-    //        'end_date': sevenDaysAgo
-    //    },
-    //    success: function (data, status, xhr) {
-    //        console.log(data)
-    //        drawNewChart(today, sevenDaysAgo, data.meter_data);
-    //        $('#yourSum').html(data.user_meter_data_sum + ' kWh');
-    //        $('#neighborsSum').html(data.others_avg + ' kWh');
-    //        $('#statisticTiles').show();
-    //    },
-    //    error: function (xhr, status, error) {
-    //        console.log('Błąd: ', xhr.status)
-    //    }
-    //});
-
-
 
     $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
         //console.log("star/end " + picker.startDate.format('YYYY-MM-DD'), + " to " + picker.endDate.format('YYYY-MM-DD'));
         var range = parseInt((picker.endDate-picker.startDate)/86399999);
         var startDate = picker.startDate.format("YYYY-MM-DD"),
             endDate = picker.endDate.format("YYYY-MM-DD");
+
+        console.log('range', range);
 
         console.log("star/end " + startDate.toString() + " to " + endDate.toString());
 
@@ -237,6 +219,9 @@ $(document).ready(function() {
                 $('#yourSum').html(data.user_meter_data_sum + ' kWh');
                 $('#neighborsSum').html(data.others_avg + ' kWh');
                 $('#statisticTiles').show();
+                if(range == 1){
+                    $('.simulate-eco').hide();
+                }
             },
             error: function (xhr, status, error) {
                 console.log('Błąd: ', xhr.status)
