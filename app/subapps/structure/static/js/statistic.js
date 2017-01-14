@@ -158,16 +158,24 @@ $(document).ready(function() {
                     [8.825],
                     [7.95]
                 ],
-                powerProduced = 0;
+                powerProduced = 0,
+                realSum = 0;
 
             for (var i = 0; i < days; i++) {
                 var date = new Date(startDay+i*86399999);
                 d2.push([startDay+i*86399999, powerSource*dayLenght[date.getMonth()]]);
                 powerProduced += powerSource*dayLenght[date.getMonth()];
             }
+            realSum = parseInt($('#yourSum').text()) - powerProduced;
 
             $('.ecoSum').removeClass('hidden');
             $('#producedSum').html(powerProduced.toFixed(2) + ' kWh');
+
+            if(realSum > 0){
+                $('#realSum').html(realSum.toFixed(2) + ' kWh');
+            }else{
+                $('#realSum').html(0 + ' kWh');
+            }
 
             var plot = $.plot($("#placeholder1"), [{
                 label: "Zużycie",
